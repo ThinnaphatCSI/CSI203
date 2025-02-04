@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview File Before Upload</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .container { max-width: 500px; margin: auto; }
+        input, button { margin: 10px; padding: 10px; }
+        #preview { margin-top: 20px; }
+        img { max-width: 100%; height: auto; display: block; margin: auto; }
+        pre { text-align: left; background: #f4f4f4; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📂 Preview File Before Upload</h2>
+        <input type="file" id="fileInput" onchange="previewFile()">
+        <button onclick="uploadFile()">Upload</button>
+        <div id="preview"></div>
+    </div>
+
+    <script>
+        function previewFile() {
+            const file = document.getElementById('fileInput').files[0];
+            const preview = document.getElementById('preview');
+            preview.innerHTML = ''; // ล้างค่าเดิม
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            // กรณีเป็นไฟล์ภาพ
+            if (file.type.startsWith('image/')) {
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            } 
+            // กรณีเป็นไฟล์ข้อความ
+            else if (file.type === 'text/plain' || file.type === 'application/json') {
+                reader.onload = function (e) {
+                    const pre = document.createElement('pre');
+                    pre.textContent = e.target.result;
+                    preview.appendChild(pre);
+                };
+                reader.readAsText(file);
+            } 
+            // ไฟล์อื่น ๆ แสดงเป็นข้อความ
+            else {
+                const p = document.createElement('p');
+                p.textContent = `Selected file: ${file.name}`;
+                preview.appendChild(p);
+            }
+        }
+
+        function uploadFile() {
+            alert('ฟีเจอร์อัปโหลดจะถูกเรียกใช้เมื่อเพิ่มการเชื่อมต่อกับเซิร์ฟเวอร์');
+        }
+    </script>
+</body>
+</html>

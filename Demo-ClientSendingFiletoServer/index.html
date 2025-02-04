@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload & Download</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .container { max-width: 500px; margin: auto; }
+        input, button { margin: 10px; padding: 10px; }
+        ul { list-style: none; padding: 0; }
+        li { margin: 10px 0; }
+        a { text-decoration: none; color: blue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📂 Upload & Download Files</h2>
+
+        <!-- อัปโหลดไฟล์ -->
+        <input type="file" id="fileInput" onchange="previewFile()">
+        <button onclick="uploadFile()">Upload</button>
+        <p id="uploadStatus"></p>
+        
+        <!--h2>📂 Preview File Before Upload</h2>
+        <div id="preview" style="width: auto; height: auto;"></div!-->
+
+        <h3>📜 Files on Server</h3>
+        <ul id="fileList"></ul>
+    </div>
+
+    <script>
+        const serverUrl = 'http://localhost:8100';
+        /*
+        function previewFile() {
+            const file = document.getElementById('fileInput').files[0];
+            const preview = document.getElementById('preview');
+            preview.innerHTML = ''; // ล้างค่าเดิม
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            // กรณีเป็นไฟล์ภาพ
+            if (file.type.startsWith('image/')) {
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            } 
+            // กรณีเป็นไฟล์ข้อความ
+            else if (file.type === 'text/plain' || file.type === 'application/json') {
+                reader.onload = function (e) {
+                    const pre = document.createElement('pre');
+                    pre.textContent = e.target.result;
+                    preview.appendChild(pre);
+                };
+                reader.readAsText(file);
+            } 
+            // ไฟล์อื่น ๆ แสดงเป็นข้อความ
+            else {
+                const p = document.createElement('p');
+                p.textContent = `Selected file: ${file.name}`;
+                preview.appendChild(p);
+            }
+        }
+        */
+        // 📌 อัปโหลดไฟล์ไปยังเซิร์ฟเวอร์
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput').files[0];
+            if (!fileInput) return alert('Please select a file');
+
+            const formData = new FormData();
+            formData.append('file', fileInput);
+
+            fetch(`${serverUrl}/upload`, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('uploadStatus').textContent = data.message;
+                    loadFileList(); // โหลดรายการไฟล์ใหม่
+                })
+                .catch(error => console.error('Upload error:', error));
+        }
+
+        // 📌 โหลดรายการไฟล์ที่มีในเซิร์ฟเวอร์
+        function loadFileList() {
+            fetch(`${serverUrl}/files`)
+                .then(response => response.json())
+                .then(files => {
+                    const fileList = document.getElementById('fileList');
+                    fileList.innerHTML = '';
+                    files.forEach(file => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<a href="${serverUrl}/download/${file}" download>${file}</a>`;
+                        fileList.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Error loading file list:', error));
+        }
+
+        // โหลดรายการไฟล์เมื่อเปิดเว็บ
+        loadFileList();
+    </script>
+</body>
+</html>
