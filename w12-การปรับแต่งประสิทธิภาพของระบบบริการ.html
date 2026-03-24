@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSI203 - บทที่ 12: การปรับแต่งประสิทธิภาพของระบบบริการ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Prompt', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f2f5;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 2rem 0;
+            border-bottom: 4px solid #3b82f6;
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+        }
+
+        .header .course-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .nav-links {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0.75rem 2rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #475569;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.25rem 0;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-links a:hover {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1280px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Cards - Square Box Style */
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 1.75rem;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card-header {
+            background: #f8fafc;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-header h2 {
+            color: #0f172a;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-header h3 {
+            color: #334155;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+        }
+
+        /* Box Components */
+        .objective-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.25rem;
+            transition: all 0.2s;
+        }
+
+        .objective-box h4 {
+            color: #3b82f6;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .objective-box ul {
+            margin-left: 1.25rem;
+            color: #334155;
+        }
+
+        .objective-box li {
+            margin: 0.5rem 0;
+        }
+
+        /* KPI Cards */
+        .kpi-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .kpi-card .metric {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 0.25rem;
+        }
+
+        .kpi-card p {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        /* Process Flow */
+        .process-flow {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 1.25rem 0;
+        }
+
+        .process-step {
+            background: #1e293b;
+            color: white;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+            min-width: 90px;
+        }
+
+        /* Tables */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .info-table th,
+        .info-table td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .info-table th {
+            background: #f8fafc;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .info-table tr:hover {
+            background: #faf9fe;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Activity Box */
+        .activity-box {
+            background: #fef9e6;
+            border: 1px solid #fde047;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .activity-box h4 {
+            color: #b45309;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .activity-box ol, .activity-box ul {
+            margin-left: 1.25rem;
+        }
+
+        .activity-box li {
+            margin: 0.4rem 0;
+        }
+
+        /* Tool Badge */
+        .tool-badge {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #1e293b;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin: 0.2rem;
+        }
+
+        /* Review List */
+        .review-list {
+            margin-left: 1.5rem;
+        }
+
+        .review-list li {
+            margin: 0.75rem 0;
+        }
+
+        /* Performance Monitor Tool */
+        .perf-monitor {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .perf-monitor h3 {
+            color: #0f172a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .monitor-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-card .metric-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metric-card .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .metric-card .metric-unit {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .metric-card.warning .metric-value {
+            color: #e67e22;
+        }
+
+        .metric-card.critical .metric-value {
+            color: #ef4444;
+        }
+
+        .metric-card.success .metric-value {
+            color: #10b981;
+        }
+
+        .log-container {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .log-entry {
+            padding: 0.3rem 0;
+            border-bottom: 1px solid #1e293b;
+            color: #94a3b8;
+        }
+
+        .log-entry.info {
+            color: #3b82f6;
+        }
+
+        .log-entry.warning {
+            color: #f59e0b;
+        }
+
+        .log-entry.error {
+            color: #ef4444;
+        }
+
+        .log-entry.success {
+            color: #10b981;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 1.5rem 0;
+        }
+        .intro-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+            border-left: 5px solid #3b82f6;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.75rem;
+        }
+        .intro-card h3 {
+            color: #1e293b;
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .intro-card .highlight {
+            background: #3b82f6;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+        .intro-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .intro-stat {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .intro-stat strong {
+            color: #3b82f6;
+        }
+
+        /* Step Detail Styles */
+        .step-detail {
+            margin: 1.5rem 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .step-header {
+            background: #f1f5f9;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            color: #0f172a;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .step-header:hover {
+            background: #e2e8f0;
+        }
+        .step-header .step-number {
+            background: #3b82f6;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-right: 0.75rem;
+        }
+        .step-header .toggle-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        .step-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+        .step-content {
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0;
+            display: block;
+        }
+        .step-content.collapsed {
+            display: none;
+        }
+        .case-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.5rem 0;
+            font-size: 0.85rem;
+        }
+        .case-table th, .case-table td {
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem;
+            vertical-align: top;
+        }
+        .case-table th {
+            background: #f8fafc;
+        }
+        .five-whys-box {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+        }
+        .root-cause-box {
+            background: #3b82f6;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-top: 1px solid #1e293b;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .container {
+                padding: 0 1rem;
+            }
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            .process-step {
+                min-width: 70px;
+                padding: 0.4rem 0.8rem;
+                font-size: 0.7rem;
+            }
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.85rem;
+            }
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .nav-bar, .footer, .perf-monitor {
+                display: none;
+            }
+            .card {
+                break-inside: avoid;
+                border: 1px solid #ccc;
+            }
+            body {
+                background: white;
+            }
+            .step-header {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>CSI203 สถาปัตยกรรมดิจิทัลและระบบปฏิบัติการ</h1>
+            <div class="subtitle">ครั้งที่ 12: การปรับแต่งประสิทธิภาพของระบบบริการ</div>
+            <div class="course-info">ภาควิชาวิทยาการคอมพิวเตอร์ | Sripatum University</div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="#objectives">วัตถุประสงค์</a>
+            <a href="#theory">ภาคทฤษฎี</a>
+            <a href="#practice">ภาคปฏิบัติ</a>
+            <a href="#tool">เครื่องมือตรวจสอบ</a>
+            <a href="#activities">กิจกรรม</a>
+            <a href="#review">ทบทวน</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Intro -->
+         <div class="intro-card">
+            <h3>
+                <span>⚡</span> ทำไมต้องปรับแต่งประสิทธิภาพระบบ
+            </h3>
+            <p>นักศึกษาเคยเจอสถานการณ์เหล่านี้หรือไม่ เว็บไซต์โหลดนานเกินรอ ระบบตอบสนองช้าขณะมีผู้ใช้งานพร้อมกันหลายคน หรือแอปพลิเคชันค้างระหว่างทำงานสำคัญ ปัญหาเหล่านี้ล้วนเป็นสัญญาณที่บอกว่า <strong class="highlight">ระบบของเรากำลังมีปัญหาด้านประสิทธิภาพ</strong></p>
+            
+            <div class="intro-stats">
+                <div class="intro-stat"><strong>47%</strong> ของผู้ใช้คาดหวังให้เว็บไซต์โหลดภายใน 2 วินาที</div>
+                <div class="intro-stat"><strong>1 วินาที</strong> ที่ช้าลง = Conversion ลดลง 7%</div>
+                <div class="intro-stat"><strong>40%</strong> ของผู้ใช้จะละทิ้งเว็บไซต์ที่โหลดนานเกิน 3 วินาที</div>
+            </div>
+            
+            <p style="margin-top: 1rem;">ในบทเรียนนี้ เราจะเรียนรู้วิธีการตรวจสอบ วิเคราะห์ และปรับแต่งประสิทธิภาพระบบอย่างเป็นระบบ เพื่อให้ระบบของคุณทำงานได้รวดเร็ว เสถียร และประหยัดทรัพยากรมากขึ้น</p>
+        </div>
+
+        <!-- Objectives Section -->
+        <div class="card" id="objectives">
+            <div class="card-header">
+                <h2>📚 วัตถุประสงค์การเรียนรู้</h2>
+            </div>
+            <div class="card-body">
+                <div class="grid-2">
+                    <div class="objective-box">
+                        <h4>📖 ภาคทฤษฎี</h4>
+                        <ul>
+                            <li>เข้าใจเทคนิคการวิเคราะห์ประสิทธิภาพระบบ</li>
+                            <li>เรียนรู้วิธีการปรับแต่งทรัพยากรฮาร์ดแวร์และซอฟต์แวร์</li>
+                            <li>พัฒนาทักษะการตรวจสอบและแก้ไขปัญหาประสิทธิภาพ</li>
+                            <li>ศึกษาแนวคิดของการเพิ่มประสิทธิภาพ (Optimization) ระบบ</li>
+                        </ul>
+                    </div>
+                    <div class="objective-box">
+                        <h4>💻 ภาคปฏิบัติ</h4>
+                        <ul>
+                            <li>ฝึกใช้เครื่องมือ monitoring ต่างๆ</li>
+                            <li>วิเคราะห์ประสิทธิภาพของโปรเจกต์</li>
+                            <li>พัฒนาทักษะการระบุและแก้ไขปัญหาด้านประสิทธิภาพ</li>
+                            <li>เพิ่มประสิทธิภาพโปรเจกต์ให้มีประสิทธิภาพมากขึ้น</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theory Section -->
+        <div class="card" id="theory">
+            <div class="card-header">
+                <h2>📖 ภาคทฤษฎี</h2>
+            </div>
+            <div class="card-body">
+                <h3>1. ความสำคัญของการปรับแต่งประสิทธิภาพระบบ</h3><br>
+                <p>การปรับแต่งประสิทธิภาพระบบ (System Performance Tuning) เป็นกระบวนการสำคัญในการทำให้ระบบคอมพิวเตอร์ทำงานได้อย่างมีประสิทธิภาพสูงสุด โดยมีเป้าหมายเพื่อ</p><br>
+                
+                <div class="grid-4">
+                    <div class="kpi-card"><div class="metric">⬇️ Response Time</div><p>ลดระยะเวลาในการประมวลผล</p></div>
+                    <div class="kpi-card"><div class="metric">⬆️ Throughput</div><p>เพิ่มปริมาณงานที่ประมวลผลได้</p></div>
+                    <div class="kpi-card"><div class="metric">📊 Resource</div><p>ลดการใช้ทรัพยากรระบบ</p></div>
+                    <div class="kpi-card"><div class="metric">🔒 Stability</div><p>เพิ่มความเสถียรและความน่าเชื่อถือ</p></div>
+                </div>
+                <hr>
+
+                <h3>2. ตัวชี้วัดประสิทธิภาพหลัก (KPIs)</h3>
+                <table class="info-table">
+                    <thead>
+                        <tr><th>ตัวชี้วัด</th><th>คำอธิบาย</th><th>ค่าที่เหมาะสม</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>CPU Usage</td><td>ร้อยละของการใช้งานหน่วยประมวลผล</td><td>&lt; 70-80%</td></tr>
+                        <tr><td>Memory Usage</td><td>ปริมาณหน่วยความจำที่ใช้งาน</td><td>&lt; 80-85%</td></tr>
+                        <tr><td>Disk I/O</td><td>อัตราการอ่าน/เขียนข้อมูลบนดิสก์</td><td>ขึ้นอยู่กับ workload</td></tr>
+                        <tr><td>Network Bandwidth</td><td>ปริมาณข้อมูลที่ส่ง/รับผ่านเครือข่าย</td><td>ขึ้นอยู่กับความต้องการ</td></tr>
+                        <tr><td>Response Time</td><td>เวลาตอบสนองของระบบ</td><td>&lt; 2-3 วินาที</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>3. ปัญหาที่พบได้บ่อยในระบบ</h3><br>
+                <div class="grid-3">
+                    <div class="objective-box">
+                        <h4>⚠️ CPU Bound</h4>
+                        <p>ระบบถูกจำกัดด้วยประสิทธิภาพของ CPU</p>
+                        <ul><li>CPU Usage สูงเป็นเวลานาน</li><li>ระบบตอบสนองช้า</li><li>แอปพลิเคชันค้าง</li></ul>
+                    </div>
+                    <div class="objective-box">
+                        <h4>⚠️ Memory Bound</h4>
+                        <p>ระบบถูกจำกัดด้วยหน่วยความจำ</p>
+                        <ul><li>Memory Usage สูง</li><li>การสลับข้อมูล (Swap) บ่อย</li><li>Memory Leak</li></ul>
+                    </div>
+                    <div class="objective-box">
+                        <h4>⚠️ I/O Bound</h4>
+                        <p>ระบบถูกจำกัดด้วยการอ่าน/เขียนข้อมูล</p>
+                        <ul><li>Disk I/O สูง</li><li>ระบบหน่วงเวลาขณะอ่าน/เขียนไฟล์</li><li>การเข้าถึงฐานข้อมูลไม่มีประสิทธิภาพ</li></ul>
+                    </div>
+                </div><hr>
+
+                <h3>4. กระบวนการแก้ไขปัญหา (พร้อมตัวอย่างกรณีศึกษา)</h3>
+                <div class="process-flow">
+                    <div class="process-step">1. ระบุปัญหา</div>
+                    <div class="process-step">2. รวบรวมข้อมูล</div>
+                    <div class="process-step">3. วิเคราะห์</div>
+                    <div class="process-step">4. วางแผนแก้ไข</div>
+                    <div class="process-step">5. ดำเนินการ</div>
+                    <div class="process-step">6. ติดตามผล</div>
+                </div>
+
+                <!-- รายละเอียดขั้นตอนพร้อมตัวอย่าง -->
+                <div class="step-detail">
+                    <div class="step-header" onclick="toggleStep(this)">
+                        <span><span class="step-number">1</span> ระบุปัญหา</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>อาการที่พบ:</strong> ผู้ใช้แจ้งว่าระบบ Upload ไฟล์ช้า ไฟล์ขนาด 10 MB ใช้เวลานานกว่า 30 วินาที บางครั้งเกิด Connection Timeout</p>
+                        <p><strong>การระบุเพิ่มเติม:</strong> ปัญหาเกิดขึ้นเฉพาะช่วงเวลา 13.00-14.00 น. เฉพาะไฟล์ขนาดใหญ่ (>5MB) เท่านั้น</p>
+                        <p><strong>เครื่องมือ:</strong> User Report, Alert System, Monitoring Tool</p>
+                    </div>
+                </div>
+
+                <div class="step-detail">
+                    <div class="step-header" onclick="toggleStep(this)">
+                        <span><span class="step-number">2</span> รวบรวมข้อมูล</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="step-content">
+                        <table class="case-table">
+                            <tr><th>ประเภทข้อมูล</th><th>ค่าที่วัดได้</th><th>เครื่องมือ</th></tr>
+                            <tr><td>CPU Usage</td><td>85-95% (ขณะอัปโหลด)</td><td>Task Manager</td></tr>
+                            <tr><td>Memory Usage</td><td>2.4 GB / 4 GB (60%)</td><td>Resource Monitor</td></tr>
+                            <tr><td>Network Upload</td><td>1.2 MB/s</td><td>Resource Monitor</td></tr>
+                            <tr><td>Response Time</td><td>32-45 วินาที</td><td>Custom Log</td></tr>
+                        </table>
+                        <div class="code-block" style="margin-top:0.5rem">
+                            <pre><code>[2026-03-24 13:15:32] ERROR: Maximum execution time exceeded
+[2026-03-24 13:15:32] DETAIL: Script execution time: 32.5s (limit: 30s)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-detail">
+                    <div class="step-header" onclick="toggleStep(this)">
+                        <span><span class="step-number">3</span> วิเคราะห์ (5 Whys)</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="step-content">
+                        <div class="five-whys-box">
+                            <p><strong>ปัญหา:</strong> ระบบอัปโหลดไฟล์ขนาด 10MB ใช้เวลานานกว่า 30 วินาที</p>
+                            <p><strong>1. Why?</strong> → กระบวนการอัปโหลดต้องเขียนไฟล์ลง disk ชั่วคราวก่อนส่ง</p>
+                            <p><strong>2. Why?</strong> → PHP ต้องประมวลผลไฟล์ทั้งหมดใน memory ก่อนส่ง</p>
+                            <p><strong>3. Why?</strong> → PHP memory_limit (128MB) ไม่เพียงพอสำหรับไฟล์ขนาดใหญ่</p>
+                            <p><strong>4. Why?</strong> → ค่า memory_limit ถูกตั้งไว้ต่ำเกินไปจากค่าเริ่มต้น</p>
+                            <p><strong>5. Why?</strong> → ไม่มีการปรับแต่งค่าให้เหมาะสมกับ workload จริง</p>
+                        </div>
+                        <div class="root-cause-box">
+                            <strong>✅ สาเหตุที่แท้จริง:</strong> PHP memory_limit และ max_execution_time ไม่เหมาะสมกับขนาดไฟล์ที่ต้องประมวลผล
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-detail">
+                    <div class="step-header" onclick="toggleStep(this)">
+                        <span><span class="step-number">4</span> วางแผนแก้ไข</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="step-content">
+                        <table class="case-table">
+                            <tr><th>การดำเนินการ</th><th>ผู้รับผิดชอบ</th><th>เวลา</th><th>ความเสี่ยง</th></tr>
+                            <tr><td>เพิ่ม memory_limit จาก 128MB เป็น 512MB</td><td>DevOps</td><td>10 นาที</td><td>ต่ำ</td></tr>
+                            <tr><td>เพิ่ม max_execution_time จาก 30s เป็น 60s</td><td>DevOps</td><td>5 นาที</td><td>ต่ำ</td></tr>
+                            <tr><td>ปรับปรุง upload chunk size</td><td>Developer</td><td>2 ชั่วโมง</td><td>ปานกลาง</td></tr>
+                        </table>
+                        <p><strong>กำหนดการ:</strong> 25 มีนาคม 2567 เวลา 22.00-23.00 น. (นอกเวลาทำการ)</p>
+                    </div>
+                </div>
+
+                <div class="step-detail">
+                    <div class="step-header" onclick="toggleStep(this)">
+                        <span><span class="step-number">5</span> ดำเนินการ</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="step-content">
+                        <div class="code-block">
+                            <pre><code>; php.ini
+memory_limit = 512M
+max_execution_time = 60
+post_max_size = 100M
+upload_max_filesize = 100M</code></pre>
+                        </div>
+                        <p>ดำเนินการรีสตาร์ท Web Server และปรับปรุงโค้ดฝั่ง Client ให้รองรับการอัปโหลดแบบ chunk</p>
+                    </div>
+                </div>
+
+                <div class="step-detail">
+                    <div class="step-header" onclick="toggleStep(this)">
+                        <span><span class="step-number">6</span> ติดตามผล</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="step-content">
+                        <table class="case-table">
+                            <tr><th>ตัวชี้วัด</th><th>ก่อนแก้ไข</th><th>หลังแก้ไข</th><th>การเปลี่ยนแปลง</th></tr>
+                            <tr><td>Upload Time (10MB)</td><td>32-45 วินาที</td><td>5-8 วินาที</td><td>⬇️ ลดลง 82%</td></tr>
+                            <tr><td>CPU Usage</td><td>85-95%</td><td>45-60%</td><td>⬇️ ลดลง 40%</td></tr>
+                            <tr><td>Error Rate</td><td>15%</td><td>0%</td><td>✅ หมดปัญหา</td></tr>
+                        </table>
+                        <p><strong>บทเรียนที่ได้:</strong> ควรตรวจสอบ default configuration ก่อน deploy ระบบ และทำ monitoring อย่างต่อเนื่อง</p>
+                    </div>
+                </div>
+
+                <h3>5. เครื่องมือที่ใช้ในการตรวจสอบ</h3>
+                <table class="info-table">
+                    <thead><tr><th>หมวดหมู่</th><th>เครื่องมือ</th><th>การใช้งาน</th></tr></thead>
+                    <tbody>
+                        <tr><td>System Monitoring</td><td>Task Manager, Resource Monitor, Performance Monitor</td><td>ตรวจสอบ CPU, Memory, Disk, Network</td></tr>
+                        <tr><td>Application Monitoring</td><td>New Relic, Datadog, Dynatrace</td><td>ตรวจสอบประสิทธิภาพแอปพลิเคชัน</td></tr>
+                        <tr><td>Network Analysis</td><td>Wireshark, netstat, tcpdump</td><td>วิเคราะห์แพ็กเก็ตและการเชื่อมต่อเครือข่าย</td></tr>
+                        <tr><td>Web Performance</td><td>Google Lighthouse, GTmetrix, WebPageTest</td><td>วิเคราะห์ประสิทธิภาพเว็บไซต์</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- JavaScript Performance Monitor Tool -->
+        <div class="card" id="tool">
+            <div class="card-header">
+                <h2>🛠️ เครื่องมือตรวจสอบประสิทธิภาพเว็บแอปพลิเคชัน (JavaScript Performance Monitor)</h2>
+            </div>
+            <div class="card-body">
+                <div class="perf-monitor">
+                    <h3>📊 Web Performance Monitor</h3>
+                    <p>เครื่องมือนี้จะตรวจสอบประสิทธิภาพของหน้าเว็บปัจจุบัน โดยใช้ JavaScript APIs ในการวัดค่าต่างๆ</p>
+                    <hr>
+                    <div class="monitor-controls">
+                        <button class="btn btn-primary" id="startMonitor">▶ เริ่มตรวจสอบ (10 วินาที)</button>
+                        <button class="btn btn-secondary" id="measureNow">⚡ วัดค่าปัจจุบัน</button>
+                        <button class="btn btn-danger" id="clearLogs">🗑️ ล้างข้อมูล</button>
+                        <button class="btn btn-success" id="simulateLoad">📈 จำลองโหลดหนัก</button>
+                    </div>
+
+                    <div class="metrics-grid" id="metricsGrid">
+                        <div class="metric-card">
+                            <div class="metric-label">DOM Load Time</div>
+                            <div class="metric-value" id="domLoadTime">-</div>
+                            <div class="metric-unit">milliseconds</div>
+                            <div class="progress-bar"><div class="progress-fill" id="domProgress" style="width: 0%"></div></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Page Load Time</div>
+                            <div class="metric-value" id="pageLoadTime">-</div>
+                            <div class="metric-unit">milliseconds</div>
+                            <div class="progress-bar"><div class="progress-fill" id="pageProgress" style="width: 0%"></div></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">JS Heap Used</div>
+                            <div class="metric-value" id="jsHeap">-</div>
+                            <div class="metric-unit">MB</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Network Requests</div>
+                            <div class="metric-value" id="networkCount">-</div>
+                            <div class="metric-unit">requests</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Total Size</div>
+                            <div class="metric-value" id="totalSize">-</div>
+                            <div class="metric-unit">KB</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">FPS (Estimated)</div>
+                            <div class="metric-value" id="fpsValue">-</div>
+                            <div class="metric-unit">fps</div>
+                        </div>
+                    </div>
+
+                    <div class="log-container" id="logContainer">
+                        <div class="log-entry info">📋 พร้อมใช้งาน คลิก "เริ่มตรวจสอบ" เพื่อวัดประสิทธิภาพ</div>
+                        <div class="log-entry">💡 คำแนะนำ: เปิด Developer Tools (F12) → Performance Tab เพื่อดูรายละเอียดเพิ่มเติม</div>
+                    </div>
+                </div>
+
+                <h3>📝 ตัวอย่างโค้ด JavaScript สำหรับตรวจสอบประสิทธิภาพ</h3>
+                <div class="code-block">
+                    <pre><code>// 1. วัดเวลาโหลดหน้าเว็บ
+function measurePageLoadTime() {
+    const perfData = performance.timing;
+    const loadTime = perfData.loadEventEnd - perfData.navigationStart;
+    const domTime = perfData.domContentLoadedEventEnd - perfData.navigationStart;
+    console.log(`DOM Load: ${domTime}ms, Page Load: ${loadTime}ms`);
+    return { domTime, loadTime };
+}
+
+// 2. ตรวจสอบการใช้หน่วยความจำ (เฉพาะ Chrome)
+function measureMemory() {
+    if (performance.memory) {
+        const used = performance.memory.usedJSHeapSize / 1024 / 1024;
+        console.log(`JS Heap Used: ${used.toFixed(2)} MB`);
+        return used;
+    }
+    return null;
+}
+
+// 3. ตรวจสอบ Network Requests
+function measureNetwork() {
+    const resources = performance.getEntriesByType('resource');
+    const totalSize = resources.reduce((sum, r) => sum + (r.transferSize || 0), 0);
+    console.log(`Requests: ${resources.length}, Total: ${(totalSize/1024).toFixed(2)} KB`);
+    return { count: resources.length, totalSize };
+}
+
+// 4. ตรวจสอบ FPS (Frame Per Second)
+let frameCount = 0, lastTime = performance.now();
+function measureFPS() {
+    requestAnimationFrame(() => {
+        const now = performance.now();
+        frameCount++;
+        if (now - lastTime >= 1000) {
+            const fps = (frameCount * 1000) / (now - lastTime);
+            console.log(`FPS: ${fps.toFixed(2)}`);
+            frameCount = 0;
+            lastTime = now;
+        }
+        measureFPS();
+    });
+}
+
+// 5. ตรวจสอบ Long Tasks (งานที่ใช้เวลานาน)
+function monitorLongTasks() {
+    const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+            if (entry.duration > 50) {
+                console.warn(`⚠️ Long Task: ${entry.duration.toFixed(2)}ms`);
+            }
+        }
+    });
+    observer.observe({ type: 'longtask', buffered: true });
+}
+
+// เริ่มการตรวจสอบทั้งหมด
+measurePageLoadTime();
+measureMemory();
+measureNetwork();
+measureFPS();
+monitorLongTasks();</code></pre>
+                </div>
+
+                <h3>📖 ขั้นตอนการใช้งาน JavaScript Performance Monitor</h3>
+                <div class="activity-box">
+                    <h4>🔧 วิธีใช้งานเครื่องมือ</h4>
+                    <ol>
+                        <li><strong>คลิกปุ่ม "เริ่มตรวจสอบ"</strong> - เครื่องมือจะเก็บข้อมูลประสิทธิภาพเป็นเวลา 10 วินาที</li>
+                        <li><strong>คลิกปุ่ม "วัดค่าปัจจุบัน"</strong> - วัดค่าประสิทธิภาพ ณ ขณะนั้น</li>
+                        <li><strong>คลิกปุ่ม "จำลองโหลดหนัก"</strong> - ทดสอบระบบภายใต้ภาระงานสูง</li>
+                        <li><strong>ดูผลลัพธ์</strong> - ค่า metrics จะแสดงในช่องด้านบน และ logs จะแสดงในช่องบันทึก</li>
+                    </ol>
+                </div>
+
+                <div class="activity-box">
+                    <h4>💡 การตีความผลลัพธ์</h4>
+                    <ul>
+                        <li><strong>DOM Load Time &lt; 1000ms</strong> - ดีมาก, 1000-2000ms - ปานกลาง, &gt; 2000ms - ควรปรับปรุง</li>
+                        <li><strong>Page Load Time &lt; 3000ms</strong> - ดี, &gt; 3000ms - ควรปรับปรุง</li>
+                        <li><strong>JS Heap Used</strong> - หากเพิ่มขึ้นอย่างต่อเนื่อง แสดงว่าอาจมี Memory Leak</li>
+                        <li><strong>FPS (Frame Per Second)</strong> - 60 fps คือเป้าหมาย, &lt; 30 fps แสดงว่ามีปัญหาเรื่อง animation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practice Section -->
+        <div class="card" id="practice">
+            <div class="card-header">
+                <h2>💻 ภาคปฏิบัติ</h2>
+            </div>
+            <div class="card-body">
+                <h3>📖 ขั้นตอนการใช้เครื่องมือ Monitor</h3><br>
+                
+                <h4>Part 1: 🔧 Resource Monitor (Windows)</h4><br>
+                <p>เปิดใช้งาน: Task Manager → Performance Tab → Open Resource Monitor หรือพิมพ์ "resmon" ใน Run dialog</p>
+                <hr>
+                <h4>Part 2: 🔧 Task Manager - Performance Tab</h4>            
+                <ul class="activity-box">
+                    <li><span class="tool-badge">Real-time Graphs</span> แสดงกราฟการใช้งานทรัพยากรแบบเรียลไทม์</li>
+                    <li><span class="tool-badge">Resource Utilization</span> แสดงร้อยละการใช้งาน CPU, Memory, Disk, Network</li>
+                    <li><span class="tool-badge">Process Details</span> แสดงรายละเอียดการใช้งานทรัพยากรของแต่ละกระบวนการ</li>
+                </ul>                
+                <hr>
+                <h4>Part 3: 🔧 Web-based Tools</h4>
+                <table class="info-table">
+                    <thead><tr><th>เครื่องมือ</th><th>การใช้งาน</th><th>จุดเด่น</th></thead>
+                    <tbody>
+                        <tr><td>Google Lighthouse</td><td>วิเคราะห์ประสิทธิภาพเว็บไซต์</td><td>ให้คะแนนและคำแนะนำในการปรับปรุง</td></tr>
+                        <tr><td>GTmetrix</td><td>วิเคราะห์ความเร็วเว็บไซต์</td><td>รายละเอียดการโหลดแต่ละองค์ประกอบ</td></tr>
+                        <tr><td>WebPageTest</td><td>ทดสอบความเร็วเว็บไซต์</td><td>ทดสอบจากหลายตำแหน่งและหลายเบราว์เซอร์</td></tr>
+                    </tbody>
+                 </table>
+            </div>
+        </div>
+
+        <!-- Activities Section -->
+        <div class="card" id="activities">
+            <div class="card-header">
+                <h2>📝 แบบฝึกปฏิบัติ</h2>
+            </div>
+            <div class="card-body">
+                <div class="activity-box">
+                    <h4>🎯 กิจกรรมที่ 1: การตรวจสอบประสิทธิภาพด้วย Web Performance Monitor</h4>
+                    <ol>
+                        <li>เปิดหน้าเว็บนี้และคลิกปุ่ม "เริ่มตรวจสอบ"</li>
+                        <li>สังเกตค่า DOM Load Time และ Page Load Time ที่แสดง</li>
+                        <li>คลิกปุ่ม "จำลองโหลดหนัก" และสังเกตการเปลี่ยนแปลงของค่า FPS</li>
+                        <li>บันทึกผลลัพธ์และวิเคราะห์ประสิทธิภาพของหน้าเว็บ</li>
+                    </ol>
+                </div>
+
+                <div class="activity-box">
+                    <h4>🎯 กิจกรรมที่ 2: การวิเคราะห์ประสิทธิภาพด้วย Developer Tools</h4>
+                    <ol>
+                        <li>เปิด Developer Tools (F12) → Performance Tab</li>
+                        <li>คลิก Record และโหลดหน้าเว็บใหม่</li>
+                        <li>วิเคราะห์กราฟการทำงานของ CPU, Network, และ Frames</li>
+                        <li>ระบุจุดที่ใช้ทรัพยากรมากที่สุด</li>
+                    </ol>
+                </div>
+
+                <div class="activity-box">
+                    <h4>🎯 กิจกรรมที่ 3: การวิเคราะห์ประสิทธิภาพเว็บแอปพลิเคชัน</h4>
+                    <ol>
+                        <li>เปิดเว็บแอปพลิเคชันที่พัฒนาขึ้นใน Google Chrome</li>
+                        <li>เปิด Developer Tools (F12) → Lighthouse Tab</li>
+                        <li>เลือกหมวดหมู่ Performance และคลิก "Generate Report"</li>
+                        <li>บันทึกคะแนนและข้อเสนอแนะที่ได้</li>
+                    </ol>
+                </div>
+
+                <div class="activity-box">
+                    <h4>🎯 กิจกรรมที่ 4: การเพิ่มประสิทธิภาพโปรเจกต์</h4>
+                    <ol>
+                        <li>ระบุจุดที่ต้องปรับปรุงจากกิจกรรมที่ 1-3 (อย่างน้อย 2 จุด)</li>
+                        <li>วางแผนการปรับปรุงและดำเนินการ</li>
+                        <li>ทดสอบประสิทธิภาพอีกครั้งหลังการปรับปรุง</li>
+                        <li>เปรียบเทียบผลลัพธ์ก่อนและหลังการปรับปรุง</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Section -->
+        <div class="card" id="review">
+            <div class="card-header">
+                <h2>❓ คำถามทบทวน</h2>
+            </div>
+            <div class="card-body">
+                <ol class="review-list">
+                    <li>ตัวชี้วัดประสิทธิภาพหลัก (KPIs) ที่สำคัญในการตรวจสอบระบบมีอะไรบ้าง แต่ละตัวบอกอะไรเกี่ยวกับระบบ</li>
+                    <li>ปัญหา CPU Bound และ I/O Bound แตกต่างกันอย่างไร ยกตัวอย่างอาการที่สังเกตได้ของแต่ละประเภทปัญหา</li>
+                    <li>เครื่องมือใดบ้างที่ใช้ในการตรวจสอบประสิทธิภาพระบบในระดับต่างๆ (ระบบปฏิบัติการ, แอปพลิเคชัน, เครือข่าย)</li>
+                    <li>กระบวนการแก้ไขปัญหาประสิทธิภาพระบบมีขั้นตอนอะไรบ้าง อธิบายแต่ละขั้นตอนโดยสังเขป พร้อมยกตัวอย่างประกอบ</li>
+                    <li>จากกรณีศึกษาในบทเรียน การวิเคราะห์ด้วยเทคนิค 5 Whys พบสาเหตุที่แท้จริงของปัญหาคืออะไร และมีแนวทางแก้ไขอย่างไร</li>
+                    <li>จากกิจกรรมที่ 1 ค่า DOM Load Time และ Page Load Time ที่ได้เป็นเท่าใด อยู่ในเกณฑ์ดีหรือไม่</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Evaluation Section -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📊 เกณฑ์การประเมิน</h2>
+            </div>
+            <div class="card-body">
+                <table class="info-table">
+                    <thead><tr><th>รายการ</th><th>คะแนน</th><th>หมายเหตุ</th></thead>
+                    <tbody>
+                        <tr><td>การมีส่วนร่วมในชั้นเรียน</td><td>1%</td><td>การถามคำถามหรือการแสดงความคิดเห็นเกี่ยวกับเนื้อหาที่เรียน</td></tr>
+                        <tr><td>แบบทดสอบความเข้าใจในการเรียนรู้</td><td>2%</td><td>ทดสอบความเข้าใจเนื้อหาทฤษฎีและปฏิบัติ</td></tr>
+                        <tr style="text-decoration: line-through;"><td>กิจกรรมการตรวจสอบประสิทธิภาพ</td><td>3%</td><td>บันทึกผลการทดสอบและวิเคราะห์</td></tr>
+                    </tbody>
+                 </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>CSI203 สถาปัตยกรรมดิจิทัลและระบบปฏิบัติการ | Sripatum University</p>
+        <p>เนื้อหาอาจมีการปรับเปลี่ยนตามความเหมาะสม</p>
+    </div>
+
+    <script>
+        // ฟังก์ชันสำหรับ toggle ขั้นตอน
+        function toggleStep(element) {
+            const header = element;
+            const content = header.nextElementSibling;
+            header.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+        }
+
+        // ============================================
+        // JavaScript Performance Monitor Tool
+        // ============================================
+
+        let monitoringInterval = null;
+        let fpsInterval = null;
+        let frameCount = 0;
+        let lastFpsTime = performance.now();
+        let currentFps = 0;
+        let logs = [];
+
+        function addLog(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            
+            logContainer.appendChild(logEntry);
+            logEntry.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            
+            logs.push({ message, type, timestamp });
+            
+            while (logContainer.children.length > 50) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+        }
+
+        function updateMetrics(metrics) {
+            const domElement = document.getElementById('domLoadTime');
+            const pageElement = document.getElementById('pageLoadTime');
+            const jsHeapElement = document.getElementById('jsHeap');
+            const networkCountElement = document.getElementById('networkCount');
+            const totalSizeElement = document.getElementById('totalSize');
+            const fpsElement = document.getElementById('fpsValue');
+            
+            if (metrics.domLoadTime !== undefined) {
+                domElement.textContent = metrics.domLoadTime;
+                const percent = Math.min(100, (metrics.domLoadTime / 2000) * 100);
+                document.getElementById('domProgress').style.width = `${percent}%`;
+                
+                const card = domElement.closest('.metric-card');
+                if (metrics.domLoadTime > 2000) {
+                    card.classList.add('critical');
+                    card.classList.remove('warning', 'success');
+                } else if (metrics.domLoadTime > 1000) {
+                    card.classList.add('warning');
+                    card.classList.remove('critical', 'success');
+                } else {
+                    card.classList.add('success');
+                    card.classList.remove('critical', 'warning');
+                }
+            }
+            
+            if (metrics.pageLoadTime !== undefined) {
+                pageElement.textContent = metrics.pageLoadTime;
+                const percent = Math.min(100, (metrics.pageLoadTime / 3000) * 100);
+                document.getElementById('pageProgress').style.width = `${percent}%`;
+                
+                const card = pageElement.closest('.metric-card');
+                if (metrics.pageLoadTime > 3000) {
+                    card.classList.add('critical');
+                    card.classList.remove('warning', 'success');
+                } else if (metrics.pageLoadTime > 1500) {
+                    card.classList.add('warning');
+                    card.classList.remove('critical', 'success');
+                } else {
+                    card.classList.add('success');
+                    card.classList.remove('critical', 'warning');
+                }
+            }
+            
+            if (metrics.jsHeap !== undefined) {
+                jsHeapElement.textContent = metrics.jsHeap.toFixed(2);
+                const card = jsHeapElement.closest('.metric-card');
+                if (metrics.jsHeap > 100) {
+                    card.classList.add('critical');
+                } else if (metrics.jsHeap > 50) {
+                    card.classList.add('warning');
+                } else {
+                    card.classList.add('success');
+                }
+            }
+            
+            if (metrics.networkCount !== undefined) {
+                networkCountElement.textContent = metrics.networkCount;
+            }
+            
+            if (metrics.totalSize !== undefined) {
+                totalSizeElement.textContent = metrics.totalSize.toFixed(2);
+            }
+            
+            if (metrics.fps !== undefined) {
+                currentFps = metrics.fps;
+                fpsElement.textContent = metrics.fps.toFixed(1);
+                const card = fpsElement.closest('.metric-card');
+                if (metrics.fps < 30) {
+                    card.classList.add('critical');
+                    card.classList.remove('warning', 'success');
+                } else if (metrics.fps < 50) {
+                    card.classList.add('warning');
+                    card.classList.remove('critical', 'success');
+                } else {
+                    card.classList.add('success');
+                    card.classList.remove('critical', 'warning');
+                }
+            }
+        }
+
+        function measurePerformance() {
+            const perfData = performance.timing;
+            const navigationStart = perfData.navigationStart;
+            const domLoadTime = perfData.domContentLoadedEventEnd - navigationStart;
+            const pageLoadTime = perfData.loadEventEnd - navigationStart;
+            return { domLoadTime, pageLoadTime };
+        }
+
+        function measureMemory() {
+            if (performance.memory) {
+                return performance.memory.usedJSHeapSize / 1024 / 1024;
+            }
+            return null;
+        }
+
+        function measureNetwork() {
+            const resources = performance.getEntriesByType('resource');
+            const totalSize = resources.reduce((sum, r) => sum + (r.transferSize || 0), 0);
+            return { count: resources.length, totalSize: totalSize / 1024 };
+        }
+
+        function startFPSMonitoring() {
+            if (fpsInterval) clearInterval(fpsInterval);
+            frameCount = 0;
+            lastFpsTime = performance.now();
+            
+            function countFrame() {
+                frameCount++;
+                requestAnimationFrame(countFrame);
+            }
+            requestAnimationFrame(countFrame);
+            
+            fpsInterval = setInterval(() => {
+                const now = performance.now();
+                const fps = (frameCount * 1000) / (now - lastFpsTime);
+                frameCount = 0;
+                lastFpsTime = now;
+                updateMetrics({ fps });
+            }, 1000);
+        }
+
+        function measureAll() {
+            const perf = measurePerformance();
+            const memory = measureMemory();
+            const network = measureNetwork();
+            
+            const metrics = {
+                domLoadTime: perf.domLoadTime,
+                pageLoadTime: perf.pageLoadTime,
+                networkCount: network.count,
+                totalSize: network.totalSize
+            };
+            
+            if (memory !== null) {
+                metrics.jsHeap = memory;
+            }
+            
+            updateMetrics(metrics);
+            return metrics;
+        }
+
+        function startMonitoring(duration = 10000) {
+            if (monitoringInterval) clearInterval(monitoringInterval);
+            addLog('🚀 เริ่มการตรวจสอบประสิทธิภาพระบบ...', 'info');
+            addLog(`📊 ระยะเวลาตรวจสอบ: ${duration / 1000} วินาที`, 'info');
+            measureAll();
+            
+            let elapsed = 0;
+            monitoringInterval = setInterval(() => {
+                elapsed += 1000;
+                const metrics = measureAll();
+                addLog(`📈 CPU Load Simulation: ${Math.floor(Math.random() * 40 + 20)}% (จำลอง)`, 'info');
+                addLog(`📊 DOM Load: ${metrics.domLoadTime}ms, Page Load: ${metrics.pageLoadTime}ms`, 'info');
+                
+                if (elapsed >= duration) {
+                    clearInterval(monitoringInterval);
+                    monitoringInterval = null;
+                    addLog('📋 === สรุปรายงานประสิทธิภาพ ===', 'success');
+                    const finalMetrics = measureAll();
+                    if (finalMetrics.pageLoadTime > 3000) {
+                        addLog('⚠️ คำเตือน: Page Load Time สูงเกิน 3000ms ควรปรับปรุงประสิทธิภาพ', 'warning');
+                    } else if (finalMetrics.pageLoadTime > 1500) {
+                        addLog('⚡ Page Load Time อยู่ในเกณฑ์ปานกลาง ยังสามารถปรับปรุงได้', 'warning');
+                    } else {
+                        addLog('✅ Page Load Time อยู่ในเกณฑ์ดี', 'success');
+                    }
+                    addLog('✅ การตรวจสอบเสร็จสิ้น', 'success');
+                }
+            }, 1000);
+        }
+
+        function simulateHeavyLoad() {
+            addLog('⚠️ กำลังจำลองโหลดหนัก...', 'warning');
+            const startTime = performance.now();
+            let result = 0;
+            for (let i = 0; i < 100000000; i++) {
+                result += Math.sqrt(i);
+            }
+            const duration = performance.now() - startTime;
+            addLog(`📊 การจำลองโหลดหนักเสร็จสิ้น ใช้เวลา ${duration.toFixed(2)}ms`, 'info');
+            if (duration > 1000) {
+                addLog('⚠️ พบว่าโหลดหนักทำให้ระบบทำงานช้า ควรพิจารณาใช้ Web Worker สำหรับงานหนัก', 'warning');
+            }
+            measureAll();
+        }
+
+        function clearLogs() {
+            const logContainer = document.getElementById('logContainer');
+            logContainer.innerHTML = '';
+            logs = [];
+            addLog('🗑️ ล้างข้อมูลเรียบร้อย', 'info');
+            addLog('💡 คำแนะนำ: เปิด Developer Tools (F12) → Performance Tab เพื่อดูรายละเอียดเพิ่มเติม', 'info');
+        }
+
+        document.getElementById('startMonitor').addEventListener('click', () => startMonitoring(10000));
+        document.getElementById('measureNow').addEventListener('click', () => {
+            const metrics = measureAll();
+            addLog(`📊 วัดค่าปัจจุบัน: DOM Load = ${metrics.domLoadTime}ms, Page Load = ${metrics.pageLoadTime}ms`, 'success');
+            if (metrics.jsHeap) addLog(`💾 JS Heap Usage: ${metrics.jsHeap.toFixed(2)} MB`, 'info');
+            addLog(`🌐 Network: ${metrics.networkCount} requests, ${metrics.totalSize.toFixed(2)} KB`, 'info');
+        });
+        document.getElementById('clearLogs').addEventListener('click', clearLogs);
+        document.getElementById('simulateLoad').addEventListener('click', simulateHeavyLoad);
+        
+        startFPSMonitoring();
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const metrics = measureAll();
+                addLog(`📊 หน้าเว็บโหลดเสร็จ: DOM Load = ${metrics.domLoadTime}ms, Page Load = ${metrics.pageLoadTime}ms`, 'success');
+            }, 100);
+        });
+    </script>
+</body>
+</html>
