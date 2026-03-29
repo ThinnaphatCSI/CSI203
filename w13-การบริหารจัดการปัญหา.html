@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSI203 - บทที่ 13: การบริหารจัดการปัญหา | Workshop ครบวงจร (Demo #1 + Demo #2)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Prompt', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e6e9f0 100%);
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 2rem 0;
+            border-bottom: 4px solid #3b82f6;
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+        }
+
+        .header .course-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .nav-bar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .nav-links {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0.75rem 2rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #475569;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.25rem 0;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-links a:hover {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 1.75rem;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card-header {
+            background: #f8fafc;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-header h2 {
+            color: #0f172a;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+        }
+
+        .objective-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.25rem;
+        }
+
+        .objective-box h4 {
+            color: #3b82f6;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .objective-box ul {
+            margin-left: 1.25rem;
+            color: #334155;
+        }
+
+        .process-flow {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 1.25rem 0;
+        }
+
+        .process-step {
+            background: #3b82f6;
+            color: white;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+            min-width: 90px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .info-table th, .info-table td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .info-table th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+
+        /* Presentation Flowchart */
+        .presentation-flowchart {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .flowchart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 700px;
+        }
+
+        .flow-step {
+            background: white;
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            min-width: 140px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .flow-step:hover {
+            transform: translateY(-4px);
+            border-color: #3b82f6;
+        }
+
+        .step-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .step-title { font-weight: 700; font-size: 1rem; color: #0f172a; }
+        .step-desc { font-size: 0.75rem; color: #64748b; }
+        .step-time { background: #e6f0ff; color: #3b82f6; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 20px; margin-top: 0.5rem; display: inline-block; }
+        .arrow-down { text-align: center; font-size: 1.5rem; color: #3b82f6; margin: -0.2rem 0; }
+        .branch-container { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; }
+        .timeline-bar { background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec489a); height: 4px; border-radius: 2px; margin: 1.5rem 0 1rem; }
+        .timeline-tips { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+        .tip-badge { background: #f1f5f9; border-radius: 40px; padding: 0.4rem 1rem; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .tip-badge span { font-weight: 700; color: #3b82f6; }
+
+        /* Demo Container for Performance Card */
+        .demo-performance-wrapper {
+            background: transparent;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Performance Issue Card */
+        .performance-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .performance-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.2);
+        }
+
+        .issue-header {
+            background: linear-gradient(135deg, darkred 0%, black 100%);
+            padding: 1.5rem 2rem;
+            color: white;
+        }
+
+        .issue-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .issue-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .badge-critical {
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            background: #fef2f2;
+            border-bottom: 1px solid #fee2e2;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(220,38,38,0.15);
+        }
+
+        .stat-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .stat-value { font-size: 1.8rem; font-weight: 700; color: #dc2626; }
+        .stat-label { font-size: 0.8rem; color: #64748b; margin-top: 0.25rem; }
+
+        .content-section {
+            padding: 1.5rem 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-card {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .tool-card:hover {
+            border-color: #dc2626;
+            background: white;
+            transform: translateX(4px);
+        }
+
+        .tool-card h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tool-card p {
+            font-size: 0.85rem;
+            color: #475569;
+            line-height: 1.5;
+        }
+        
+        .highlight {
+            background: #3b82f6;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .solution-item {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-radius: 14px;
+            padding: 1rem;
+            border-left: 4px solid #22c55e;
+            transition: all 0.2s;
+        }
+
+        .solution-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(34,197,94,0.15);
+        }
+
+        .solution-icon { font-size: 1.2rem; margin-right: 0.5rem; }
+        .solution-title { font-weight: 600; color: #166534; margin-bottom: 0.4rem; font-size: 0.9rem; }
+        .solution-desc { font-size: 0.8rem; color: #2d6a4f; line-height: 1.4; }
+
+        .result-banner {
+            background: linear-gradient(135deg, black 0%, darkgreen 100%);
+            margin: 0 2rem 1.5rem 2rem;
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: white;
+        }
+
+        .result-banner h3 { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+        .result-stats { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .result-stat { text-align: center; }
+        .result-stat .number { font-size: 1.2rem; font-weight: 700; }
+        .result-stat .label { font-size: 0.7rem; opacity: 0.9; }
+
+        .five-whys-section {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 0 2rem 1.5rem 2rem;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .why-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .why-number {
+            background: #3b82f6;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .why-text { flex: 1; font-size: 0.85rem; color: #334155; }
+        .root-cause {
+            background: darkslategray;
+            color: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Demo #2 Styles */
+        .demo-container {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            color: #e2e8f0;
+        }
+
+        .demo-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .metric-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .metric-card { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; text-align: center; }
+        .metric-value { font-size: 1.6rem; font-weight: 700; color: #3b82f6; }
+        .message-log { background: #0f172a; border-radius: 12px; padding: 1rem; max-height: 160px; overflow-y: auto; font-family: monospace; font-size: 0.75rem; }
+        .log-entry { padding: 0.4rem; border-bottom: 1px solid #334155; display: flex; gap: 0.75rem; }
+        .log-time { color: #64748b; min-width: 70px; }
+        .log-encrypted { color: #22c55e; }
+        .log-plain { color: #ef4444; }
+        .demo-controls { display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
+        .btn-demo { background: #3b82f6; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+        .btn-demo:hover { transform: translateY(-2px); background: #2563eb; }
+        .btn-danger { background: #ef4444; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-success { background: #22c55e; }
+        .btn-success:hover { background: #16a34a; }
+        .input-message { flex: 1; padding: 0.5rem; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; }
+        .encryption-status { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(59,130,246,0.2); padding: 0.3rem 1rem; border-radius: 40px; }
+        .status-led { width: 10px; height: 10px; border-radius: 50%; animation: pulse 1.5s infinite; }
+        .status-led.secure { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+        .status-led.insecure { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+        
+        .insight-badge { background: #e6f0ff; border-left: 4px solid #2563eb; padding: 1rem; border-radius: 8px; margin: 1rem 0; }
+        .case-study { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #3b82f6; border-radius: 10px; padding: 1.25rem; margin: 1rem 0; }
+        .footer { background: #0f172a; color: #94a3b8; text-align: center; padding: 1.5rem; margin-top: 2rem; font-size: 0.85rem; }
+        .badge-performance { background: #3b82f6; color: white; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; display: inline-block; margin-left: 0.5rem; }
+        .badge-security { background: #8b5cf6; color: white; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; display: inline-block; margin-left: 0.5rem; }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.5rem; }
+            .container { padding: 0 1rem; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .flow-step { min-width: 110px; padding: 0.75rem; }
+            .step-icon { font-size: 1.5rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .result-banner { flex-direction: column; text-align: center; }
+            .result-stats { justify-content: center; }
+        }
+        @media print { .nav-bar, .footer, .demo-container { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>CSI203 สถาปัตยกรรมดิจิทัลและระบบปฏิบัติการ</h1>
+            <div class="subtitle">ครั้งที่ 13: การบริหารจัดการปัญหา | Workshop ครบวงจร (Demo #1 Performance + Demo #2 Security)</div>
+            <div class="course-info">ภาควิชาวิทยาการคอมพิวเตอร์ | Sripatum University</div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="#objectives">วัตถุประสงค์</a>
+            <a href="#presentation">โครงสร้างนำเสนอ</a>
+            <a href="#demo1">📁 Demo #1</a>
+            <a href="#demo2">📡 Demo #2</a>
+            <a href="#case">กรณีศึกษา</a>
+            <a href="#review">ทบทวน</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card-header">
+            <div class="card-header"><h2>ทำไมต้องการการบริหารจัดการปัญหา</h2></div>
+            <div class="card-body">
+                <p>หัวข้อในสัปดาห์นี้ของรายวิชา CSI203 สถาปัตยกรรมดิจิทัลและระบบปฏิบัติการ คือ <strong class="highlight">‘การบริหารจัดการปัญหา’ (Problem Management)</strong> ในการพัฒนาระบบหรือการดูแลโครงสร้างพื้นฐานดิจิทัล สิ่งหนึ่งที่หลีกเลี่ยงไม่ได้คือ ‘ปัญหา’ ไม่ว่าจะเป็นระบบทำงานช้า ผู้ใช้ไม่สามารถเข้าถึงข้อมูลได้ หรือแม้กระทั่งช่องโหว่ด้านความปลอดภัยที่อาจถูกโจมตีได้ การแก้ปัญหาแบบ ‘ปุบปับ’ หรือแก้ที่ปลายเหตุ อาจทำให้ปัญหาเดิมกลับมาซ้ำอีกครั้งโดยไม่รู้ตัว ดังนั้น ในภาคเรียนนี้ เราจะมาเรียนรู้ กระบวนการจัดการปัญหาอย่างเป็นระบบ ตั้งแต่การตรวจจับ การวิเคราะห์หาสาเหตุที่แท้จริงด้วยเทคนิคต่างๆ เช่น 5 Whys หรือ Root Cause Analysis (RCA) ไปจนถึงการแก้ไขและป้องกันในระยะยาว นอกจากนั้น ในส่วนของ Workshop วันนี้ เราจะได้เห็นการประยุกต์ใช้จริงผ่าน Demo 2 สถานการณ์ ได้แก่ ปัญหาด้านประสิทธิภาพ (Performance) ของระบบไฟล์ และปัญหาด้านความปลอดภัย (Security) ของการสื่อสารแบบ Real-time พร้อมทั้งฝึกการนำเสนอโปรเจกต์ตามโครงสร้างมาตรฐานอีกด้วย</p>
+            </div>
+            
+        </div>
+
+        <!-- Objectives -->
+        <div class="card" id="objectives">
+            <div class="card-header"><h2>📚 วัตถุประสงค์การเรียนรู้</h2></div>
+            <div class="card-body">
+                <div class="grid-2">
+                    <div class="objective-box">
+                        <h4>📖 ภาคทฤษฎี</h4>
+                        <ul>
+                            <li>เข้าใจกระบวนการจัดการปัญหา (Incident Management)</li>
+                            <li>พัฒนาทักษะการวิเคราะห์ด้วยเทคนิค 5 Whys และ Root Cause Analysis (RCA)</li>
+                            <li>เรียนรู้เครื่องมือวิเคราะห์ปัญหา: Log Files, Performance Monitor, Network Analyzer, Wireshark</li>
+                            <li>ศึกษาวิธีการป้องกันปัญหาทั้งด้าน Performance และความปลอดภัยในการสื่อสาร</li>
+                        </ul>
+                    </div>
+                    <div class="objective-box">
+                        <h4>💻 ภาคปฏิบัติ (2 Workshop Demos)</h4>
+                        <ul>
+                            <li><strong>Demo #1:</strong> การจัดการปัญหา Performance - ระบบไฟล์ทำงานช้า</li>
+                            <li><strong>Demo #2:</strong> Real-time Dashboard + สถานะการเข้ารหัส (Encryption Status Monitor)</li>
+                            <li>ฝึกนำเสนอตามโครงสร้างแผนภาพและรับ Feedback</li>
+                            <li>เรียนรู้การตรวจจับปัญหาความปลอดภัยแบบ Real-time</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="insight-badge"><strong>🎯 สรุป:</strong> การบริหารจัดการปัญหาที่มีประสิทธิภาพ = ตรวจจับไว + วิเคราะห์แม่นยำ + แก้ไขตรงจุด + ป้องกันระยะยาว ครอบคลุมทั้งด้าน Performance และ Security</div>
+            </div>
+        </div>
+
+        <!-- Presentation Structure Flowchart -->
+        <div class="card" id="presentation">
+            <div class="card-header"><h2>🎯 โครงสร้างการนำเสนอโปรเจกต์ (Presentation Flow)</h2></div>
+            <div class="card-body">
+                <div class="presentation-flowchart">
+                    <div class="flowchart-container">
+                        <div class="flow-step"><div class="step-icon">🌟</div><div class="step-title">Introduction</div><div class="step-desc">ที่มา แนวคิด ความเป็นมา</div><div class="step-time">2-3 นาที</div></div>
+                        <div class="arrow-down">▼</div>
+                        <div class="flow-step"><div class="step-icon">❓</div><div class="step-title">Problem Statement</div><div class="step-desc">ปัญหาที่โปรเจกต์ต้องการแก้ไข</div><div class="step-time">2-3 นาที</div></div>
+                        <div class="arrow-down">▼</div>
+                        <div class="flow-step"><div class="step-icon">💡</div><div class="step-title">Solution</div><div class="step-desc">วิธีการแก้ปัญหา / สถาปัตยกรรม</div><div class="step-time">3-4 นาที</div></div>
+                        <div class="arrow-down">▼</div>
+                        <div class="branch-container">
+                            <div class="flow-step"><div class="step-icon">✨</div><div class="step-title">Features</div><div class="step-desc">ฟีเจอร์หลักของระบบ</div></div>
+                            <div class="flow-step"><div class="step-icon">🎁</div><div class="step-title">Benefits</div><div class="step-desc">ประโยชน์ที่ผู้ใช้ได้รับ</div></div>
+                        </div>
+                        <div class="arrow-down">▼</div>
+                        <div class="flow-step"><div class="step-icon">⚡</div><div class="step-title">Challenges & Solutions</div><div class="step-desc">ปัญหาที่พบ + วิธีการแก้ไข</div><div class="step-time">3-4 นาที</div></div>
+                        <div class="arrow-down">▼</div>
+                        <div class="flow-step" style="border:2px solid #3b82f6; background:#eff6ff;"><div class="step-icon">🎬</div><div class="step-title">Demo</div><div class="step-desc">การสาธิตการทำงานจริง (2 Demos)</div><div class="step-time">5-7 นาที</div></div>
+                        <div class="arrow-down">▼</div>
+                        <div class="flow-step"><div class="step-icon">📌</div><div class="step-title">Conclusion</div><div class="step-desc">สรุปผล + แผนงานต่อ</div><div class="step-time">2-3 นาที</div></div>
+                    </div>
+                    <div class="timeline-bar"></div>
+                    <div class="timeline-tips">
+                        <div class="tip-badge"><span>🕐 รวมทั้งหมด:</span> 15-20 นาที</div>
+                        <div class="tip-badge"><span>🎤 เทคนิค:</span> เน้น Demo ให้ชัดเจน</div>
+                        <div class="tip-badge"><span>💬 Q&A:</span> เตรียมตอบคำถาม 5 นาที</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo #1: Performance Issue Management - Enhanced Design -->
+        <div class="card" id="demo1">
+            <div class="card-header">
+                <h2>📁 Demo #1: การจัดการปัญหา Performance <span class="badge-performance">Performance Tuning</span></h2>
+            </div>
+            <div class="card-body" style="padding: 0;">
+                <div class="performance-card" style="border-radius: 0; box-shadow: none;">
+                    <div class="issue-header">
+                        <h2>
+                            <span>⚠️</span> 
+                            ระบบบริหารจัดการไฟล์ทำงานช้า
+                            <span class="badge-critical">CRITICAL ISSUE</span>
+                        </h2>
+                        <p>เมื่อมีผู้ใช้งานพร้อมกันมากกว่า 50 คน ส่งผลกระทบต่อประสิทธิภาพการทำงานขององค์กร</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item"><div class="stat-icon">⏱️</div><div class="stat-value">&gt; 8 วินาที</div><div class="stat-label">Response Time</div></div>
+                        <div class="stat-item"><div class="stat-icon">💻</div><div class="stat-value">95%</div><div class="stat-label">CPU Usage</div></div>
+                        <div class="stat-item"><div class="stat-icon">💾</div><div class="stat-value">สูงผิดปกติ</div><div class="stat-label">Disk I/O</div></div>
+                    </div>
+
+                    <div class="content-section">
+                        <div class="section-title"><span>🔍</span> การวิเคราะห์ด้วยเครื่องมือ</div>
+                        <div class="tools-grid">
+                            <div class="tool-card"><h4>📄 Log Files</h4><p>พบ Query แบบ Full Table Scan บนตาราง file_metadata ทำให้ฐานข้อมูลทำงานหนัก</p></div>
+                            <div class="tool-card"><h4>📊 Performance Monitor</h4><p>Disk Queue Length สูงผิดปกติ เนื่องจากการอ่านไฟล์ซ้ำซ้อนโดยไม่มี Cache</p></div>
+                            <div class="tool-card"><h4>🗄️ Database Profiler</h4><p>พบ Slow Query จำนวนมากที่ไม่มี Index ส่งผลให้การค้นหาช้าลง</p></div>
+                            <div class="tool-card"><h4>🌐 Network Analyzer</h4><p>มีการเรียก API เดิมซ้ำโดยไม่มี Cache ทำให้เกิดการโหลดข้อมูลซ้ำซ้อน</p></div>
+                        </div>
+                    </div>
+
+                    <div class="content-section">
+                        <div class="section-title"><span>✅</span> แนวทางแก้ไข (Solutions)</div>
+                        <div class="solutions-grid">
+                            <div class="solution-item"><div class="solution-title"><span class="solution-icon">🗂️</span> เพิ่ม Index</div><div class="solution-desc">เพิ่ม Index บนคอลัมน์ที่ใช้ค้นหาบ่อย (user_id, created_at, file_type) เพื่อเพิ่มความเร็วในการค้นหา</div></div>
+                            <div class="solution-item"><div class="solution-title"><span class="solution-icon">⚡</span> Redis Caching</div><div class="solution-desc">ใช้ Redis Caching สำหรับ Metadata ที่เรียกใช้ซ้ำ ลดการเข้าถึงฐานข้อมูลลงได้ถึง 70%</div></div>
+                            <div class="solution-item"><div class="solution-title"><span class="solution-icon">📄</span> Pagination & Lazy Loading</div><div class="solution-desc">ปรับปรุง Pagination และ Lazy Loading สำหรับรายการไฟล์ ลดการโหลดข้อมูลครั้งละมากๆ</div></div>
+                            <div class="solution-item"><div class="solution-title"><span class="solution-icon">🌍</span> CDN Integration</div><div class="solution-desc">เพิ่ม CDN สำหรับไฟล์สาธารณะ ลดภาระการทำงานของเซิร์ฟเวอร์ต้นทาง</div></div>
+                            <div class="solution-item"><div class="solution-title"><span class="solution-icon">🔌</span> Connection Pool</div><div class="solution-desc">ปรับ Connection Pool และเพิ่ม Async Processing เพื่อรองรับการเชื่อมต่อพร้อมกันมากขึ้น</div></div>
+                        </div>
+                    </div>
+
+                    <div class="result-banner">
+                        <h3><span>📈</span> ผลลัพธ์หลังการแก้ไข</h3>
+                        <div class="result-stats">
+                            <div class="result-stat"><div class="number">↓ 82%</div><div class="label">Response Time</div></div>
+                            <div class="result-stat"><div class="number">↓ 60%</div><div class="label">CPU Usage</div></div>
+                            <div class="result-stat"><div class="number">↑ 4x</div><div class="label">รองรับผู้ใช้พร้อมกัน</div></div>
+                        </div>
+                    </div>
+
+                    <div class="five-whys-section">
+                        <div class="section-title" style="margin-bottom: 1rem;"><span>🔎</span> เทคนิค 5 Whys - การวิเคราะห์สาเหตุที่แท้จริง</div>
+                        <div class="why-item"><div class="why-number">1</div><div class="why-text"><strong>Why?</strong> ฐานข้อมูลมี query ช้า → เพราะไม่มี Index บนตาราง file_metadata</div></div>
+                        <div class="why-item"><div class="why-number">2</div><div class="why-text"><strong>Why?</strong> ไม่มีการออกแบบ Index → เพราะขาดการวิเคราะห์ workload และรูปแบบการใช้งาน</div></div>
+                        <div class="why-item"><div class="why-number">3</div><div class="why-text"><strong>Why?</strong> ทีมพัฒนาไม่ได้รับการอบรม DB tuning → เพราะไม่มีแผนพัฒนาทักษะด้านฐานข้อมูล</div></div>
+                        <div class="why-item"><div class="why-number">4</div><div class="why-text"><strong>Why?</strong> ไม่มี process review query → เพราะไม่มี code review ที่เน้นประสิทธิภาพฐานข้อมูล</div></div>
+                        <div class="why-item"><div class="why-number">5</div><div class="why-text"><strong>Why?</strong> องค์กรไม่มีมาตรฐาน performance testing → เพราะขาดการกำหนด KPIs ด้านประสิทธิภาพระบบ</div></div>
+                        <div class="root-cause"><span>🎯</span><div><strong>สาเหตุที่แท้จริง (Root Cause):</strong> องค์กรขาดมาตรฐานและกระบวนการในการออกแบบ ตรวจสอบ และทดสอบประสิทธิภาพฐานข้อมูล ส่งผลให้เกิดปัญหาสะสมเมื่อระบบขยายขนาด</div></div>
+                        <div style="margin-top: 0.75rem; font-size: 0.75rem; color: #475569; display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <span>🔧 <strong>แนวทางป้องกันระยะยาว:</strong> จัดทำ Database Performance Standard, อบรมทีมพัฒนา, เพิ่ม Code Review Checklist, นำ Performance Testing เข้าสู่ CI/CD Pipeline</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo #2: Real-time Dashboard + Encryption Status -->
+        <div class="card" id="demo2">
+            <div class="card-header">
+                <h2>📡 Demo #2: Real-time Dashboard + สถานะการเข้ารหัส <span class="badge-security">Security Monitoring</span></h2>
+            </div>
+            <div class="card-body">
+                <div class="insight-badge"><strong>🎯 สอดคล้องกับโครงสร้างนำเสนอ:</strong> ส่วนนี้คือการสาธิต (Demo) ที่แสดงฟีเจอร์หลักและความสามารถในการตรวจจับปัญหาความปลอดภัยแบบ Real-time</div>
+                
+                <div class="demo-container">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:1rem;">
+                        <div class="demo-title">📊 Real-time Communication Monitor</div>
+                        <div class="encryption-status" id="encryptionStatusBox">
+                            <div class="status-led secure" id="statusLed"></div>
+                            <span id="encryptionText">🔒 Secure (TLS 1.3)</span>
+                        </div>
+                    </div>
+                    <div class="metric-cards">
+                        <div class="metric-card"><div>📨 ข้อความที่ส่ง</div><div class="metric-value" id="sentCount">0</div></div>
+                        <div class="metric-card"><div>📥 ข้อความที่รับ</div><div class="metric-value" id="recvCount">0</div></div>
+                        <div class="metric-card"><div>🔐 การเข้ารหัส</div><div class="metric-value" id="encryptionMethod">AES-256-GCM</div></div>
+                        <div class="metric-card"><div>⏱️ Latency (ms)</div><div class="metric-value" id="latency">32</div></div>
+                    </div>
+                    <div class="message-log" id="messageLog">
+                        <div class="log-entry"><span class="log-time">--:--:--</span><span>🟢 ระบบพร้อมทำงาน | สถานะการเข้ารหัส: ACTIVE (TLS 1.3)</span></div>
+                        <div class="log-entry"><span class="log-time">--:--:--</span><span>🔐 WebSocket Secure (wss://) เชื่อมต่อสำเร็จ</span></div>
+                    </div>
+                    <div class="demo-controls">
+                        <input type="text" class="input-message" id="messageInput" placeholder="พิมพ์ข้อความทดสอบ...">
+                        <button class="btn-demo" id="sendSecureBtn">📤 ส่งแบบเข้ารหัส</button>
+                        <button class="btn-demo btn-danger" id="simulateAttackBtn">⚠️ จำลองการโจมตี (No Encryption)</button>
+                        <button class="btn-demo" id="clearLogBtn">🗑️ ล้าง Log</button>
+                    </div>
+                    <p style="font-size:0.7rem; margin-top:0.75rem; color:#94a3b8;">💡 สถานะสีเขียว = การสื่อสารปลอดภัย (เข้ารหัส) | สีแดง = ตรวจพบการเชื่อมต่อที่ไม่ปลอดภัย (ต้องแก้ไขทันที)</p>
+                </div>
+                <div class="case-study">    
+                    <!-- <div class="five-whys-section"> -->
+                            <div class="section-title" style="margin-bottom: 1rem;"><span>🔐 การวิเคราะห์ปัญหาความปลอดภัยด้วยเทคนิค 5 Whys</span></div>
+                            <h4><strong>ปัญหา:</strong> ข้อมูลถูกส่งในรูปแบบ plain text แม้ติดตั้ง SSL Certificate แล้ว</h4><br>
+                            <div class="why-item"><div class="why-number">1</div><div class="why-text"><strong>Why?</strong> WebSocket ใช้ ws:// แทน wss:// → เพราะ configuration mismatch</div></div>
+                            <div class="why-item"><div class="why-number">2</div><div class="why-text"><strong>Why?</strong> ไม่มีการบังคับใช้ HSTS (HTTP Strict Transport Security) → ขาด security header</div></div>
+                            <div class="why-item"><div class="why-number">3</div><div class="why-text"><strong>Why?</strong> ทีมพัฒนาไม่ทราบถึงความเสี่ยง → ขาดการอบรมด้าน Security</div></div>
+                            <div class="why-item"><div class="why-number">4</div><div class="why-text"><strong>Why?</strong> ไม่มี automated test ตรวจสอบ protocol → CI/CD ขาด security testing stage</div></div>
+                            <div class="why-item"><div class="why-number">5</div><div class="why-text"><strong>Why?</strong> องค์กรไม่มีมาตรฐานความปลอดภัยสำหรับระบบ Real-time → ต้องจัดทำมาตรฐาน</div></div>
+                            <div class="root-cause"><div><strong>✅ Root Cause:</strong> กระบวนการพัฒนาไม่รวมการตรวจสอบความปลอดภัยของช่องทางการสื่อสาร</div></div>
+                            <div style="margin-top: 0.75rem; font-size: 0.75rem; color: #475569; display: flex; gap: 1rem; flex-wrap: wrap;">
+                                <span>🔧 <strong>แนวทางแก้ไข:</strong> บังคับใช้ TLS 1.3, ตั้งค่า HSTS, ใช้ mTLS สำหรับอุปกรณ์ IoT, เพิ่ม Encryption Status Dashboard</span>
+                            </div>
+                    <!-- </div> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Combined Case Study Comparison -->
+        <div class="card" id="case">
+            <div class="card-header"><h2>🔍 กรณีศึกษาเปรียบเทียบ: Performance vs Security</h2></div>
+            <div class="card-body">
+                <div class="grid-2">
+                    <div class="case-study" style="margin:0;">
+                        <h4>📊 Performance Issue (Demo #1)</h4>
+                        <p><strong>อาการ:</strong> ระบบช้า, CPU สูง, Response time นาน</p>
+                        <p><strong>เครื่องมือ:</strong> Log, Profiler, Monitor, JMeter</p>
+                        <p><strong>แก้ไข:</strong> Index, Cache, Pagination, CDN</p>
+                        <p><strong>ป้องกัน:</strong> Performance Testing, Code Review, Load Testing</p>
+                    </div>
+                    <div class="case-study" style="margin:0;">
+                        <h4>🔐 Security Issue (Demo #2)</h4>
+                        <p><strong>อาการ:</strong> ข้อมูลไม่เข้ารหัส, เสี่ยง MITM Attack</p>
+                        <p><strong>เครื่องมือ:</strong> Wireshark, SSL Labs, Network Analyzer</p>
+                        <p><strong>แก้ไข:</strong> TLS 1.3, HSTS, wss://, mTLS</p>
+                        <p><strong>ป้องกัน:</strong> Security Audit, Pen Testing, Encryption Monitor</p>
+                    </div>
+                </div>
+                <div class="insight-badge" style="margin-top:1rem;">
+                    <strong>📌 บทเรียนรวม:</strong> การบริหารจัดการปัญหาที่มีประสิทธิภาพต้องครอบคลุมทั้งด้าน Performance และ Security โดยใช้กระบวนการ Incident Management (Detection → Analysis → Resolution → Closure) ร่วมกับเทคนิค 5 Whys และเครื่องมือที่เหมาะสม พร้อมการตรวจสอบแบบ Real-time
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Questions -->
+        <div class="card" id="review">
+            <div class="card-header"><h2>❓ คำถามทบทวน</h2></div>
+            <div class="card-body">
+                <ol style="margin-left:1.5rem; line-height:2;">
+                    <li>โครงสร้างการนำเสนอโปรเจกต์ที่แนะนำมีทั้งหมดกี่ส่วน แต่ละส่วนใช้เวลาเท่าไร (อ้างอิงจากแผนภาพ)</li>
+                    <li>จาก Demo #1 ปัญหา Performance ที่เกิดขึ้นมีสาเหตุหลักจากอะไร และแนวทางแก้ไขใดที่เห็นผลชัดเจนที่สุด</li>
+                    <li>จาก Demo #2 หากสถานะการเข้ารหัสเปลี่ยนเป็นสีแดง หมายถึงอะไร และควรดำเนินการอย่างไรตามกระบวนการ Incident Management</li>
+                    <li>เทคนิค 5 Whys ช่วยในการวิเคราะห์ปัญหาทั้ง Performance และ Security ได้อย่างไร ยกตัวอย่างอย่างน้อย 1 ปัญหา</li>
+                    <li>การเตรียมตัวสำหรับการสาธิต (Demo) ควรมีแผนสำรองอะไรบ้าง และเพราะเหตุใดจึงสำคัญ?</li>
+                    <li>เปรียบเทียบความแตกต่างระหว่างการจัดการปัญหา Performance กับ Security ว่ามีขั้นตอนการวิเคราะห์ที่เหมือนหรือต่างกันอย่างไร</li>
+                    <li>เครื่องมือใดบ้างที่ใช้ในการตรวจจับปัญหาความปลอดภัยของการสื่อสารแบบ Real-time</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Evaluation -->
+        <div class="card">
+            <div class="card-header"><h2>📊 เกณฑ์การประเมิน</h2></div>
+            <div class="card-body">
+                <table class="info-table">
+                    <thead><tr><th>รายการ</th><th>คะแนน</th><th>หมายเหตุ</th></tr></thead>
+                    <tbody>
+                        <tr><td>การมีส่วนร่วมในชั้นเรียน (ถาม-ตอบ)</td><td>1%</td><td>การถาม-ตอบเกี่ยวกับ Demo #1 และ #2</td></tr>
+                        <tr><td>แบบทดสอบความเข้าใจ</td><td>2%</td><td>ทดสอบเนื้อหาทฤษฎี การประยุกต์ใช้ และการวิเคราะห์ปัญหา</td></tr>
+                    </tbody>
+                </table>
+                <p style="margin-top:1rem; color:#3b82f6;">📌 หมายเหตุ: นักศึกษาสามารถทดลองใช้งาน Demo #2 เพื่อทำความเข้าใจการตรวจจับสถานะการเข้ารหัส และนำไปประยุกต์ใช้ในการนำเสนอโปรเจกต์จริง</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>CSI203 สถาปัตยกรรมดิจิทัลและระบบปฏิบัติการ | Sripatum University</p>
+        <p>เนื้อหาอาจมีการปรับเปลี่ยนตามความเหมาะสม</p>
+    </div>
+
+    <script>
+        // Demo #2 JavaScript - Real-time Dashboard with Encryption Status
+        let sentMessages = 0, receivedMessages = 0, isSecureMode = true;
+        const sentCountEl = document.getElementById('sentCount');
+        const recvCountEl = document.getElementById('recvCount');
+        const messageLogEl = document.getElementById('messageLog');
+        const messageInput = document.getElementById('messageInput');
+        const sendSecureBtn = document.getElementById('sendSecureBtn');
+        const simulateAttackBtn = document.getElementById('simulateAttackBtn');
+        const clearLogBtn = document.getElementById('clearLogBtn');
+        const statusLed = document.getElementById('statusLed');
+        const encryptionText = document.getElementById('encryptionText');
+        const encryptionMethodEl = document.getElementById('encryptionMethod');
+        const latencyEl = document.getElementById('latency');
+
+        function getTimeString() { return new Date().toLocaleTimeString('th-TH', { hour12: false }); }
+        
+        function addLogEntry(message, isEncrypted = true) {
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'log-time';
+            timeSpan.textContent = getTimeString();
+            const msgSpan = document.createElement('span');
+            if (isEncrypted === undefined) msgSpan.innerHTML = message;
+            else { msgSpan.innerHTML = isEncrypted ? `🔒 ${message}` : `⚠️ ${message}`; msgSpan.className = isEncrypted ? 'log-encrypted' : 'log-plain'; }
+            logEntry.appendChild(timeSpan); logEntry.appendChild(msgSpan);
+            messageLogEl.appendChild(logEntry);
+            logEntry.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            while (messageLogEl.children.length > 50) messageLogEl.removeChild(messageLogEl.firstChild);
+        }
+        
+        function updateEncryptionUI(secure) {
+            isSecureMode = secure;
+            if (secure) {
+                statusLed.className = 'status-led secure';
+                encryptionText.innerHTML = '🔒 Secure (TLS 1.3)';
+                encryptionMethodEl.innerHTML = 'AES-256-GCM';
+            } else {
+                statusLed.className = 'status-led insecure';
+                encryptionText.innerHTML = '⚠️ ไม่ปลอดภัย (Plain Text)';
+                encryptionMethodEl.innerHTML = 'ไม่มีการเข้ารหัส';
+            }
+        }
+        
+        function simulateLatency() { const l = Math.floor(Math.random() * 50) + 10; latencyEl.textContent = l; return l; }
+        
+        function sendMessage(content, isEncrypted) {
+            if (!content.trim()) { addLogEntry('❌ ไม่มีข้อความ', isEncrypted); return; }
+            const latency = simulateLatency();
+            sentMessages++; sentCountEl.textContent = sentMessages;
+            const preview = content.length > 40 ? content.substring(0,40)+'...' : content;
+            if (isEncrypted && isSecureMode) {
+                addLogEntry(`📤 ส่ง (เข้ารหัส): "${preview}" | Latency: ${latency}ms`, true);
+                setTimeout(() => { receivedMessages++; recvCountEl.textContent = receivedMessages; addLogEntry(`📥 Server ตอบรับ (ถอดรหัส): "${preview}"`, true); }, latency);
+            } else {
+                addLogEntry(`🚨 ส่งแบบไม่ปลอดภัย (PLAIN TEXT): "${preview}" | เสี่ยงต่อการถูกดักข้อมูล (MITM)`, false);
+                setTimeout(() => { receivedMessages++; recvCountEl.textContent = receivedMessages; addLogEntry(`📥 Server รับข้อความ (ไม่ปลอดภัย): "${preview}"`, false); }, latency);
+            }
+        }
+        
+        sendSecureBtn.addEventListener('click', () => {
+            if (!isSecureMode) { addLogEntry('⚠️ โหมดไม่ปลอดภัย! กดปุ่ม "เปิด Secure Mode" ก่อนส่งข้อความ', false); return; }
+            const msg = messageInput.value.trim();
+            if (!msg) { addLogEntry('📝 กรุณาพิมพ์ข้อความก่อนส่ง', true); return; }
+            sendMessage(msg, true);
+            messageInput.value = '';
+        });
+        
+        simulateAttackBtn.addEventListener('click', () => {
+            if (isSecureMode) { 
+                updateEncryptionUI(false); 
+                addLogEntry('🚨 ตรวจจับการโจมตี! การเชื่อมต่อถูก downgrade เป็น HTTP (ไม่เข้ารหัส) - ต้องแก้ไขทันที', false);
+                addLogEntry('⚠️ คำแนะนำ: ตรวจสอบ SSL Certificate, บังคับใช้ HSTS, และรีเซ็ตการเชื่อมต่อ', false);
+            } else { 
+                addLogEntry('⚠️ อยู่ในโหมดไม่ปลอดภัยอยู่แล้ว กดปุ่ม "เปิด Secure Mode" เพื่อเรียกคืนความปลอดภัย', false); 
+            }
+        });
+        
+        clearLogBtn.addEventListener('click', () => { messageLogEl.innerHTML = ''; addLogEntry('🧹 ล้างประวัติการสื่อสารแล้ว', true); });
+        
+        const resetSecureBtn = document.createElement('button');
+        resetSecureBtn.textContent = '🔐 เปิด Secure Mode';
+        resetSecureBtn.className = 'btn-demo btn-success';
+        resetSecureBtn.addEventListener('click', () => { 
+            if (!isSecureMode) { 
+                updateEncryptionUI(true); 
+                addLogEntry('✅ เรียกคืนการเข้ารหัส TLS 1.3 สำเร็จ | การสื่อสารกลับสู่ความปลอดภัย', true);
+                addLogEntry('🔐 เปิดใช้งาน WSS (WebSocket Secure) และ TLS 1.3 แล้ว', true);
+            } else { 
+                addLogEntry('🔒 ระบบอยู่ในโหมดปลอดภัยอยู่แล้ว', true); 
+            } 
+        });
+        document.querySelector('.demo-controls').appendChild(resetSecureBtn);
+        
+        updateEncryptionUI(true);
+        addLogEntry('🟢 Dashboard พร้อมทำงาน | แสดงสถานะการเข้ารหัสแบบ Real-time', true);
+        addLogEntry('💡 ทดสอบ: กด "ส่งแบบเข้ารหัส" เพื่อส่งข้อมูลปลอดภัย | กด "จำลองการโจมตี" เพื่อดูการตรวจจับ', true);
+    </script>
+</body>
+</html>
