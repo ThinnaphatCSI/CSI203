@@ -123,6 +123,12 @@
             gap: 1.25rem;
         }
 
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+
         .objective-box {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -144,6 +150,7 @@
             color: #334155;
         }
 
+        /* Process Flow for Incident Management */
         .process-flow {
             display: flex;
             flex-wrap: wrap;
@@ -179,6 +186,45 @@
         .info-table th {
             background: #f8fafc;
             font-weight: 600;
+        }
+
+        /* Incident Management Steps Grid */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .step-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-4px);
+            border-color: darkslateblue;
+        }
+
+        .step-card .step-icon-lg {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-card h4 {
+            color: #3b82f6;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-card p {
+            font-size: 0.8rem;
+            color: #475569;
         }
 
         /* Presentation Flowchart */
@@ -247,7 +293,7 @@
         }
 
         .issue-header {
-            background: linear-gradient(135deg, darkred 0%, black 100%);
+            background: linear-gradient(135deg, #dc2626 0%, #581010 100%);
             padding: 1.5rem 2rem;
             color: white;
         }
@@ -390,7 +436,7 @@
         .solution-desc { font-size: 0.8rem; color: #2d6a4f; line-height: 1.4; }
 
         .result-banner {
-            background: linear-gradient(135deg, black 0%, darkgreen 100%);
+            background: linear-gradient(135deg, #0b3d1d 0%, #16a34a 100%);
             margin: 0 2rem 1.5rem 2rem;
             border-radius: 16px;
             padding: 1rem 1.5rem;
@@ -440,7 +486,7 @@
 
         .why-text { flex: 1; font-size: 0.85rem; color: #334155; }
         .root-cause {
-            background: darkslategray;
+            background: rgb(38, 62, 62);
             color: white;
             border-radius: 12px;
             padding: 1rem;
@@ -491,7 +537,8 @@
         @media (max-width: 768px) {
             .header h1 { font-size: 1.5rem; }
             .container { padding: 0 1rem; }
-            .grid-2 { grid-template-columns: 1fr; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .steps-grid { grid-template-columns: 1fr; }
             .flow-step { min-width: 110px; padding: 0.75rem; }
             .step-icon { font-size: 1.5rem; }
             .stats-grid { grid-template-columns: 1fr; }
@@ -512,22 +559,23 @@
 
     <div class="nav-bar">
         <div class="nav-links">
+            <a href="#introduction">บทนำ</a>
             <a href="#objectives">วัตถุประสงค์</a>
+            <a href="#incident-mgmt">กระบวนการจัดการปัญหา</a>
             <a href="#presentation">โครงสร้างนำเสนอ</a>
             <a href="#demo1">📁 Demo #1</a>
             <a href="#demo2">📡 Demo #2</a>
-            <a href="#case">กรณีศึกษา</a>
             <a href="#review">ทบทวน</a>
         </div>
     </div>
 
     <div class="container">
-        <div class="card-header">
-            <div class="card-header"><h2>ทำไมต้องการการบริหารจัดการปัญหา</h2></div>
+        <!-- Introduction Section -->
+        <div class="card" id="introduction">
+            <div class="card-header"><h2>📖 ทำไมต้องการการบริหารจัดการปัญหา</h2></div>
             <div class="card-body">
                 <p>หัวข้อในสัปดาห์นี้ของรายวิชา CSI203 สถาปัตยกรรมดิจิทัลและระบบปฏิบัติการ คือ <strong class="highlight">‘การบริหารจัดการปัญหา’ (Problem Management)</strong> ในการพัฒนาระบบหรือการดูแลโครงสร้างพื้นฐานดิจิทัล สิ่งหนึ่งที่หลีกเลี่ยงไม่ได้คือ ‘ปัญหา’ ไม่ว่าจะเป็นระบบทำงานช้า ผู้ใช้ไม่สามารถเข้าถึงข้อมูลได้ หรือแม้กระทั่งช่องโหว่ด้านความปลอดภัยที่อาจถูกโจมตีได้ การแก้ปัญหาแบบ ‘ปุบปับ’ หรือแก้ที่ปลายเหตุ อาจทำให้ปัญหาเดิมกลับมาซ้ำอีกครั้งโดยไม่รู้ตัว ดังนั้น ในภาคเรียนนี้ เราจะมาเรียนรู้ กระบวนการจัดการปัญหาอย่างเป็นระบบ ตั้งแต่การตรวจจับ การวิเคราะห์หาสาเหตุที่แท้จริงด้วยเทคนิคต่างๆ เช่น 5 Whys หรือ Root Cause Analysis (RCA) ไปจนถึงการแก้ไขและป้องกันในระยะยาว นอกจากนั้น ในส่วนของ Workshop วันนี้ เราจะได้เห็นการประยุกต์ใช้จริงผ่าน Demo 2 สถานการณ์ ได้แก่ ปัญหาด้านประสิทธิภาพ (Performance) ของระบบไฟล์ และปัญหาด้านความปลอดภัย (Security) ของการสื่อสารแบบ Real-time พร้อมทั้งฝึกการนำเสนอโปรเจกต์ตามโครงสร้างมาตรฐานอีกด้วย</p>
             </div>
-            
         </div>
 
         <!-- Objectives -->
@@ -555,6 +603,72 @@
                     </div>
                 </div>
                 <div class="insight-badge"><strong>🎯 สรุป:</strong> การบริหารจัดการปัญหาที่มีประสิทธิภาพ = ตรวจจับไว + วิเคราะห์แม่นยำ + แก้ไขตรงจุด + ป้องกันระยะยาว ครอบคลุมทั้งด้าน Performance และ Security</div>
+            </div>
+        </div>
+
+        <!-- Incident Management Process - NEW SECTION -->
+        <div class="card" id="incident-mgmt">
+            <div class="card-header"><h2>🔄 กระบวนการจัดการปัญหา (Incident Management Process)</h2></div>
+            <div class="card-body">
+                <p><strong>Incident Management</strong> คือกระบวนการจัดการกับเหตุการณ์ผิดปกติที่เกิดขึ้นในระบบไอที โดยมีเป้าหมายเพื่อ <strong>ฟื้นฟูระบบให้กลับมาทำงานตามปกติได้เร็วที่สุด</strong> และ <strong>ลดผลกระทบต่อการดำเนินธุรกิจ</strong> ให้มากที่สุด</p>
+                
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-icon-lg">🔍</div>
+                        <h4>1. Detection<br>(ตรวจจับ)</h4>
+                        <p>การรับรู้ว่ามีเหตุการณ์ผิดปกติ ผ่านการแจ้งผู้ใช้, Alert จากระบบ Monitoring, หรือการตรวจสอบ Log</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon-lg">📊</div>
+                        <h4>2. Analysis<br>(วิเคราะห์)</h4>
+                        <p>ระบุสาเหตุและประเมินผลกระทบ จำแนกประเภทปัญหา ระดับความรุนแรง และวิเคราะห์หาสาเหตุเบื้องต้น</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon-lg">🛠️</div>
+                        <h4>3. Resolution<br>(แก้ไข)</h4>
+                        <p>ดำเนินการแก้ไขปัญหา ทั้งแบบชั่วคราว (Workaround) และแบบถาวร (Permanent Fix) หรือส่งต่อทีมที่เกี่ยวข้อง</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon-lg">✅</div>
+                        <h4>4. Closure<br>(ปิดงาน)</h4>
+                        <p>ยืนยันการแก้ไข บันทึกข้อมูล สรุปบทเรียน และปรับปรุงกระบวนการเพื่อป้องกันการเกิดซ้ำ</p>
+                    </div>
+                </div>
+
+                <div class="process-flow">
+                    <div class="process-step">🔍 Detection<br>ตรวจจับ</div>
+                    <div class="process-step">📊 Analysis<br>วิเคราะห์</div>
+                    <div class="process-step">🛠️ Resolution<br>แก้ไข</div>
+                    <div class="process-step">✅ Closure<br>ปิดงาน</div>
+                </div>
+
+                <h3>📊 ตารางสรุปกระบวนการจัดการปัญหา</h3>
+                <table class="info-table">
+                    <thead>
+                        <tr><th>ขั้นตอน</th><th>กิจกรรมหลัก</th><th>เป้าหมาย</th><th>ระยะเวลาโดยประมาณ</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Detection</strong></td><td>ตรวจจับ, รับแจ้ง, Alert</td><td>รู้ว่ามีปัญหาโดยเร็ว</td><td>ภายใน 5-15 นาที</td></tr>
+                        <tr><td><strong>Analysis</strong></td><td>วิเคราะห์สาเหตุ, ประเมินผลกระทบ</td><td>เข้าใจปัญหาและขอบเขต</td><td>15-60 นาที</td></tr>
+                        <tr><td><strong>Resolution</strong></td><td>แก้ไขชั่วคราว/ถาวร, ส่งต่อทีม</td><td>ระบบกลับมาทำงานปกติ</td><td>ตามความซับซ้อน</td></tr>
+                        <tr><td><strong>Closure</strong></td><td>ยืนยัน, บันทึก, สรุปบทเรียน</td><td>ป้องกันการเกิดซ้ำ</td><td>30-60 นาที</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="insight-badge">
+                    <strong>💡 เคล็ดลับสำคัญ:</strong> การบันทึกทุกเหตุการณ์ด้วยระบบ Ticket System (เช่น Jira, ServiceNow) การจัดลำดับความสำคัญ (Critical > High > Medium > Low) และการสื่อสารกับผู้ใช้อย่างสม่ำเสมอ เป็นหัวใจสำคัญของ Incident Management ที่มีประสิทธิภาพ
+                </div>
+
+                <h3>🔗 ความสัมพันธ์ระหว่าง Incident Management และ Problem Management</h3>
+                <table class="info-table">
+                    <thead><tr><th>Incident Management</th><th>Problem Management</th></tr></thead>
+                    <tbody>
+                        <tr><td>แก้ไขเหตุการณ์เฉพาะหน้า</td><td>วิเคราะห์หาสาเหตุที่แท้จริง</td></tr>
+                        <tr><td>ฟื้นฟูระบบให้เร็วที่สุด</td><td>ป้องกันไม่ให้เกิดซ้ำ</td></tr>
+                        <tr><td>ตอบคำถาม "อะไรเกิดขึ้น"</td><td>ตอบคำถาม "ทำไมถึงเกิดขึ้น"</td></tr>
+                        <tr><td>มุ่งเน้นระยะสั้น</td><td>มุ่งเน้นระยะยาว</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -591,7 +705,7 @@
             </div>
         </div>
 
-        <!-- Demo #1: Performance Issue Management - Enhanced Design -->
+        <!-- Demo #1: Performance Issue Management -->
         <div class="card" id="demo1">
             <div class="card-header">
                 <h2>📁 Demo #1: การจัดการปัญหา Performance <span class="badge-performance">Performance Tuning</span></h2>
@@ -694,19 +808,17 @@
                     <p style="font-size:0.7rem; margin-top:0.75rem; color:#94a3b8;">💡 สถานะสีเขียว = การสื่อสารปลอดภัย (เข้ารหัส) | สีแดง = ตรวจพบการเชื่อมต่อที่ไม่ปลอดภัย (ต้องแก้ไขทันที)</p>
                 </div>
                 <div class="case-study">    
-                    <!-- <div class="five-whys-section"> -->
-                            <div class="section-title" style="margin-bottom: 1rem;"><span>🔐 การวิเคราะห์ปัญหาความปลอดภัยด้วยเทคนิค 5 Whys</span></div>
-                            <h4><strong>ปัญหา:</strong> ข้อมูลถูกส่งในรูปแบบ plain text แม้ติดตั้ง SSL Certificate แล้ว</h4><br>
-                            <div class="why-item"><div class="why-number">1</div><div class="why-text"><strong>Why?</strong> WebSocket ใช้ ws:// แทน wss:// → เพราะ configuration mismatch</div></div>
-                            <div class="why-item"><div class="why-number">2</div><div class="why-text"><strong>Why?</strong> ไม่มีการบังคับใช้ HSTS (HTTP Strict Transport Security) → ขาด security header</div></div>
-                            <div class="why-item"><div class="why-number">3</div><div class="why-text"><strong>Why?</strong> ทีมพัฒนาไม่ทราบถึงความเสี่ยง → ขาดการอบรมด้าน Security</div></div>
-                            <div class="why-item"><div class="why-number">4</div><div class="why-text"><strong>Why?</strong> ไม่มี automated test ตรวจสอบ protocol → CI/CD ขาด security testing stage</div></div>
-                            <div class="why-item"><div class="why-number">5</div><div class="why-text"><strong>Why?</strong> องค์กรไม่มีมาตรฐานความปลอดภัยสำหรับระบบ Real-time → ต้องจัดทำมาตรฐาน</div></div>
-                            <div class="root-cause"><div><strong>✅ Root Cause:</strong> กระบวนการพัฒนาไม่รวมการตรวจสอบความปลอดภัยของช่องทางการสื่อสาร</div></div>
-                            <div style="margin-top: 0.75rem; font-size: 0.75rem; color: #475569; display: flex; gap: 1rem; flex-wrap: wrap;">
-                                <span>🔧 <strong>แนวทางแก้ไข:</strong> บังคับใช้ TLS 1.3, ตั้งค่า HSTS, ใช้ mTLS สำหรับอุปกรณ์ IoT, เพิ่ม Encryption Status Dashboard</span>
-                            </div>
-                    <!-- </div> -->
+                    <div class="section-title" style="margin-bottom: 1rem;"><span>🔐</span> การวิเคราะห์ปัญหาความปลอดภัยด้วยเทคนิค 5 Whys</div>
+                    <h4><strong>ปัญหา:</strong> ข้อมูลถูกส่งในรูปแบบ plain text แม้ติดตั้ง SSL Certificate แล้ว</h4><br>
+                    <div class="why-item"><div class="why-number">1</div><div class="why-text"><strong>Why?</strong> WebSocket ใช้ ws:// แทน wss:// → เพราะ configuration mismatch</div></div>
+                    <div class="why-item"><div class="why-number">2</div><div class="why-text"><strong>Why?</strong> ไม่มีการบังคับใช้ HSTS (HTTP Strict Transport Security) → ขาด security header</div></div>
+                    <div class="why-item"><div class="why-number">3</div><div class="why-text"><strong>Why?</strong> ทีมพัฒนาไม่ทราบถึงความเสี่ยง → ขาดการอบรมด้าน Security</div></div>
+                    <div class="why-item"><div class="why-number">4</div><div class="why-text"><strong>Why?</strong> ไม่มี automated test ตรวจสอบ protocol → CI/CD ขาด security testing stage</div></div>
+                    <div class="why-item"><div class="why-number">5</div><div class="why-text"><strong>Why?</strong> องค์กรไม่มีมาตรฐานความปลอดภัยสำหรับระบบ Real-time → ต้องจัดทำมาตรฐาน</div></div>
+                    <div class="root-cause"><div><strong>✅ Root Cause:</strong> กระบวนการพัฒนาไม่รวมการตรวจสอบความปลอดภัยของช่องทางการสื่อสาร</div></div>
+                    <div style="margin-top: 0.75rem; font-size: 0.75rem; color: #475569; display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <span>🔧 <strong>แนวทางแก้ไข:</strong> บังคับใช้ TLS 1.3, ตั้งค่า HSTS, ใช้ mTLS สำหรับอุปกรณ์ IoT, เพิ่ม Encryption Status Dashboard</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -742,12 +854,13 @@
             <div class="card-header"><h2>❓ คำถามทบทวน</h2></div>
             <div class="card-body">
                 <ol style="margin-left:1.5rem; line-height:2;">
+                    <li>กระบวนการจัดการปัญหา (Incident Management) มีกี่ขั้นตอน อะไรบ้าง แต่ละขั้นตอนมีเป้าหมายอย่างไร?</li>
                     <li>โครงสร้างการนำเสนอโปรเจกต์ที่แนะนำมีทั้งหมดกี่ส่วน แต่ละส่วนใช้เวลาเท่าไร (อ้างอิงจากแผนภาพ)</li>
                     <li>จาก Demo #1 ปัญหา Performance ที่เกิดขึ้นมีสาเหตุหลักจากอะไร และแนวทางแก้ไขใดที่เห็นผลชัดเจนที่สุด</li>
                     <li>จาก Demo #2 หากสถานะการเข้ารหัสเปลี่ยนเป็นสีแดง หมายถึงอะไร และควรดำเนินการอย่างไรตามกระบวนการ Incident Management</li>
                     <li>เทคนิค 5 Whys ช่วยในการวิเคราะห์ปัญหาทั้ง Performance และ Security ได้อย่างไร ยกตัวอย่างอย่างน้อย 1 ปัญหา</li>
                     <li>การเตรียมตัวสำหรับการสาธิต (Demo) ควรมีแผนสำรองอะไรบ้าง และเพราะเหตุใดจึงสำคัญ?</li>
-                    <li>เปรียบเทียบความแตกต่างระหว่างการจัดการปัญหา Performance กับ Security ว่ามีขั้นตอนการวิเคราะห์ที่เหมือนหรือต่างกันอย่างไร</li>
+                    <li>เปรียบเทียบความแตกต่างระหว่าง Incident Management และ Problem Management</li>
                     <li>เครื่องมือใดบ้างที่ใช้ในการตรวจจับปัญหาความปลอดภัยของการสื่อสารแบบ Real-time</li>
                 </ol>
             </div>
@@ -760,8 +873,8 @@
                 <table class="info-table">
                     <thead><tr><th>รายการ</th><th>คะแนน</th><th>หมายเหตุ</th></tr></thead>
                     <tbody>
-                        <tr><td>การมีส่วนร่วมในชั้นเรียน (ถาม-ตอบ)</td><td>1%</td><td>การถาม-ตอบเกี่ยวกับ Demo #1 และ #2</td></tr>
-                        <tr><td>แบบทดสอบความเข้าใจ</td><td>2%</td><td>ทดสอบเนื้อหาทฤษฎี การประยุกต์ใช้ และการวิเคราะห์ปัญหา</td></tr>
+                        <tr><td>การมีส่วนร่วมในชั้นเรียน (ถาม-ตอบ)</td><td>1%</td><td>การถาม-ตอบเกี่ยวกับกระบวนการจัดการปัญหาและ Demo ทั้งสอง</div></div></div></div></td></tr>
+                        <tr><td>แบบทดสอบความเข้าใจ</td><td>2%</td><td>ทดสอบเนื้อหาทฤษฎี การประยุกต์ใช้ และการวิเคราะห์ปัญหา</div></div></div></div></td></tr>
                     </tbody>
                 </table>
                 <p style="margin-top:1rem; color:#3b82f6;">📌 หมายเหตุ: นักศึกษาสามารถทดลองใช้งาน Demo #2 เพื่อทำความเข้าใจการตรวจจับสถานะการเข้ารหัส และนำไปประยุกต์ใช้ในการนำเสนอโปรเจกต์จริง</p>
@@ -771,7 +884,7 @@
 
     <div class="footer">
         <p>CSI203 สถาปัตยกรรมดิจิทัลและระบบปฏิบัติการ | Sripatum University</p>
-        <p>เนื้อหาอาจมีการปรับเปลี่ยนตามความเหมาะสม</p>
+        <p>กระบวนการจัดการปัญหา (Incident Management) | Demo #1: Performance Tuning | Demo #2: Real-time Security Monitoring</p>
     </div>
 
     <script>
