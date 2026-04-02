@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CSI203 Skill Transcript Rubrics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        /* Header */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+
+        .hero .course-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(59, 130, 246, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-links {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0.75rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .nav-links a {
+            color: #475569;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 1.25rem 1.75rem;
+            border-bottom: 2px solid #e2e8f0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0;
+        }
+
+        .card-header h2 i {
+            color: #3b82f6;
+            font-size: 1.5rem;
+        }
+
+        .card-header .toggle-icon {
+            transition: transform 0.3s;
+            font-size: 1.2rem;
+            color: #64748b;
+        }
+
+        .card-body {
+            padding: 1.5rem 1.75rem;
+            transition: all 0.3s;
+        }
+
+        .card-body.collapsed {
+            display: none;
+        }
+
+        /* Level Badges */
+        .level-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .level-1 { background: #fef9c3; color: #854d0e; }
+        .level-2 { background: #d9f99d; color: #3f6212; }
+        .level-3 { background: #bae6fd; color: #075985; }
+        .level-4 { background: #c7d2fe; color: #1e40af; }
+
+        /* Tables */
+        .rubrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .rubrics-table thead tr {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+        }
+
+        .rubrics-table th,
+        .rubrics-table td {
+            padding: 1rem 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        .rubrics-table th {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .rubrics-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .skill-name {
+            font-weight: 600;
+            color: #0f172a;
+            background: #f1f5f9;
+        }
+
+        .skill-sub {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        /* Proficiency Grid */
+        .proficiency-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .proficiency-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s;
+        }
+
+        .proficiency-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .proficiency-card .level {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .proficiency-card .level-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .proficiency-card .level-desc {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .proficiency-card.level-1-bg { background: linear-gradient(135deg, #fef9c3, #fff4e6); }
+        .proficiency-card.level-2-bg { background: linear-gradient(135deg, #d9f99d, #fef9c3); }
+        .proficiency-card.level-3-bg { background: linear-gradient(135deg, #bae6fd, #d9f99d); }
+        .proficiency-card.level-4-bg { background: linear-gradient(135deg, #c7d2fe, #bae6fd); }
+
+        /* Summary Table */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .summary-table th,
+        .summary-table td {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .summary-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .tab-btn:hover {
+            background: #f1f5f9;
+            color: #3b82f6;
+        }
+
+        .tab-btn.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Project Summary */
+        .project-card {
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .project-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #1e293b;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin: 0.2rem;
+        }
+
+        /* Week Timeline */
+        .week-timeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .week-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .week-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .week-card .week-num {
+            font-size: 0.7rem;
+            color: #3b82f6;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .week-card h4 {
+            font-size: 1rem;
+            margin: 0.5rem 0;
+            color: #0f172a;
+        }
+
+        .week-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Presentation Flowchart */
+        .presentation-flow {
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .flow-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .flow-step {
+            background: #1e293b;
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.75rem;
+            min-width: 100px;
+        }
+
+        /* Performance Monitor */
+        .perf-monitor {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 16px;
+            padding: 1.5rem;
+            color: white;
+            margin: 1rem 0;
+        }
+
+        .perf-monitor h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .monitor-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-primary:hover { background: #2563eb; transform: translateY(-2px); }
+        .btn-secondary { background: #64748b; color: white; }
+        .btn-secondary:hover { background: #475569; transform: translateY(-2px); }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; transform: translateY(-2px); }
+
+        .log-container {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 0.75rem;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.7rem;
+            margin-top: 1rem;
+        }
+
+        .log-container div {
+            padding: 0.25rem 0;
+            border-bottom: 1px solid #334155;
+            color: #94a3b8;
+        }
+
+        /* Comparison Table */
+        .comp-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .comp-table th, .comp-table td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .comp-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 1024px) {
+            .proficiency-grid { grid-template-columns: repeat(2, 1fr); }
+            .rubrics-table { font-size: 0.75rem; }
+            .rubrics-table th, .rubrics-table td { padding: 0.5rem; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 1rem; }
+            .hero h1 { font-size: 1.8rem; }
+            .proficiency-grid { grid-template-columns: 1fr; }
+            .card-header h2 { font-size: 1.1rem; }
+            .card-header h2 i { font-size: 1.2rem; }
+            .tab-btn { padding: 0.5rem 1rem; font-size: 0.75rem; }
+            .nav-links { padding: 0.5rem 1rem; gap: 0.8rem; }
+            .nav-links a { font-size: 0.75rem; }
+        }
+
+        @media print {
+            .nav-container, .footer, .perf-monitor, .monitor-controls, .card-header .toggle-icon { display: none; }
+            .card-body.collapsed { display: block; }
+            .card { break-inside: avoid; }
+        }
+
+        .info-badge {
+            background: #e6f0ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #3b82f6;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 99;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: #2563eb;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Skill Transcript Rubrics</h1>
+            <div class="subtitle">CSI203 สถาปัตยกรรมดิจิทัลและระบบปฏิบัติการ</div>
+            <div class="course-badge">
+                <i class="fas fa-university"></i>
+                <span>หลักสูตรวิทยาการคอมพิวเตอร์และนวัตกรรมการพัฒนาซอฟต์แวร์</span>
+                <i class="fas fa-graduation-cap"></i>
+                <span>มหาวิทยาลัยศรีปทุม</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-container">
+        <div class="nav-links">
+            <a href="#proficiency" class="active"><i class="fas fa-chart-line"></i> ระดับทักษะ</a>
+            <a href="#week"><i class="fas fa-calendar-week"></i> แผนการเรียน</a>
+            <a href="#ethics"><i class="fas fa-balance-scale"></i> คุณธรรม</a>
+            <a href="#cognitive"><i class="fas fa-brain"></i> ความคิด</a>
+            <a href="#interpersonal"><i class="fas fa-users"></i> ความสัมพันธ์</a>
+            <a href="#data"><i class="fas fa-database"></i> ข้อมูล</a>
+            <a href="#tech"><i class="fas fa-laptop-code"></i> เทคโนโลยี</a>
+            <a href="#projects"><i class="fas fa-project-diagram"></i> โครงงาน</a>
+            <a href="#tools"><i class="fas fa-tachometer-alt"></i> เครื่องมือ</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Proficiency Levels -->
+        <div class="card" id="proficiency">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><i class="fas fa-chart-simple"></i> ระดับความสามารถ (Proficiency Levels)</h2>
+                <i class="fas fa-chevron-up toggle-icon"></i>
+            </div>
+            <div class="card-body">
+                <div class="proficiency-grid">
+                    <div class="proficiency-card level-1-bg"><div class="level">ระดับ 1</div><div class="level-name">รู้และเข้าใจ (Awareness)</div><div class="level-desc">สามารถอธิบายแนวคิดทฤษฎีพื้นฐานได้ ผ่านการทดสอบย่อยและการมีส่วนร่วมในชั้นเรียน</div></div>
+                    <div class="proficiency-card level-2-bg"><div class="level">ระดับ 2</div><div class="level-name">ปฏิบัติตามได้ (Application)</div><div class="level-desc">สามารถปฏิบัติตามขั้นตอนในใบงาน (Workshop) และทดสอบรายสัปดาห์ได้สำเร็จ</div></div>
+                    <div class="proficiency-card level-3-bg"><div class="level">ระดับ 3</div><div class="level-name">ประยุกต์และพัฒนาได้ (Mastery)</div><div class="level-desc">สามารถนำความรู้ไปประยุกต์ใช้แก้ปัญหาในโครงงานได้ด้วยตนเอง</div></div>
+                    <div class="proficiency-card level-4-bg"><div class="level">ระดับ 4</div><div class="level-name">ออกแบบและปรับปรุงได้ (Expertise)</div><div class="level-desc">สามารถวิเคราะห์ วิจารณ์ และเสนอแนวทางการปรับปรุงระบบได้อย่างมีหลักการ</div></div>
+                </div>
+                <div class="info-badge">
+                    <i class="fas fa-info-circle"></i> <strong>เกณฑ์การผ่านรายวิชา:</strong> ระดับ 2 = ผ่านเกณฑ์ C (60-69.9%) | ระดับ 3 = ผ่านเกณฑ์ B (70-79.9%) | ระดับ 4 = ผ่านเกณฑ์ A (80-100%)
+                </div>
+            </div>
+        </div>
+
+        <!-- Week Timeline -->
+        <div class="card" id="week">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><i class="fas fa-calendar-week"></i> แผนการเรียนรายสัปดาห์และทักษะที่พัฒนา</h2>
+                <i class="fas fa-chevron-up toggle-icon"></i>
+            </div>
+            <div class="card-body">
+                <div class="week-timeline">
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 1</div><h4>แนะนำรายวิชา</h4><div class="week-skills"><span class="skill-tag">การทำงานเป็นทีม</span><span class="skill-tag">การวางแผน</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 2</div><h4>บทนำสถาปัตยกรรมดิจิทัล</h4><div class="week-skills"><span class="skill-tag">การวิเคราะห์กรณีศึกษา</span><span class="skill-tag">การจดจำรูปแบบ</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 3</div><h4>การทำงานร่วมกัน OS, Software, Hardware</h4><div class="week-skills"><span class="skill-tag">CLI (PowerShell)</span><span class="skill-tag">Device Management</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 4</div><h4>สถาปัตยกรรมอินเทอร์เน็ต</h4><div class="week-skills"><span class="skill-tag">Client-Server</span><span class="skill-tag">Node.js เบื้องต้น</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 5</div><h4>โปรโตคอล TCP/IP</h4><div class="week-skills"><span class="skill-tag">Wireshark</span><span class="skill-tag">คำสั่งเครือข่าย</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 6</div><h4>สถาปัตยกรรมระบบบริการคลาวด์</h4><div class="week-skills"><span class="skill-tag">Cloud Computing</span><span style="color: lightyellow; background-color: darkslategray;" class="skill-tag">Project Demo #1 (Start)</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 7</div><h4>แพลตฟอร์มไคลเอ็นต์และพื้นที่จัดเก็บ</h4><div class="week-skills"><span class="skill-tag">Structured/Unstructured Data</span><span class="skill-tag">Backup Strategy</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 8</div><h4>โครงสร้างลำดับชั้นบริการ (SaaS, DaaS, PaaS, IaaS)</h4><div class="week-skills"><span class="skill-tag">Google Sheets API</span><span class="skill-tag">Cloud Service Selection</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 9</div><h4>ระบบปฏิบัติการดิจิทัล</h4><div class="week-skills"><span class="skill-tag">ติดตั้ง Windows/Linux</span><span class="skill-tag">GUI/CLI</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 10</div><h4>การติดตั้งและการปรับแต่ง OS</h4><div class="week-skills"><span class="skill-tag">Promiscuous Mode</span><span class="skill-tag">Kernel Tuning</span><span style="color: lightyellow; background-color: darkslategray;" class="skill-tag">Project Demo #2 (Start)</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 11</div><h4>ความมั่นคงปลอดภัยของระบบ</h4><div class="week-skills"><span class="skill-tag">Encryption (AES)</span><span class="skill-tag">JWT Authentication</span><span class="skill-tag">HTTPS/CORS/Helmet</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 12</div><h4>การปรับแต่งประสิทธิภาพระบบบริการ</h4><div class="week-skills"><span class="skill-tag">Performance Monitor</span><span class="skill-tag">Lighthouse/GTmetrix</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 13</div><h4>การบริหารจัดการปัญหา</h4><div class="week-skills"><span class="skill-tag">5 Whys / RCA</span><span class="skill-tag">Incident Management</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 14</div><h4>การนำเสนอโครงงาน</h4><div class="week-skills"><span class="skill-tag">Presentation</span><span class="skill-tag">Q&A</span><span style="color: lightyellow; background-color: darkslateblue;" class="skill-tag">Demo Project</span></div></div>
+                    <div class="week-card"><div class="week-num">สัปดาห์ที่ 15</div><h4>การนำเสนอโครงงาน</h4><div class="week-skills"><span class="skill-tag">Presentation</span><span class="skill-tag">Q&A</span><span style="color: lightyellow; background-color: darkslateblue;" class="skill-tag">Demo Project</span></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ethics Section -->
+        <div class="card" id="ethics">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><i class="fas fa-balance-scale"></i> องค์ประกอบที่ 1: คุณธรรม จริยธรรม และความรู้ทางวิชาชีพ</h2>
+                <i class="fas fa-chevron-up toggle-icon"></i>
+            </div>
+            <div class="card-body">
+                <div class="tabs"><button class="tab-btn active" data-tab="ethics-1">จริยธรรมทางดิจิทัล</button><button class="tab-btn" data-tab="ethics-2">ความรับผิดชอบต่อสังคม</button></div>
+                <div id="ethics-1" class="tab-content active"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การตระหนักถึงผลกระทบของการดักจับข้อมูล <span class="skill-sub">(W4, W13)</span></td><td>อธิบายความหมายและความเสี่ยงของ MITM Attack ได้</td><td>เปรียบเทียบ HTTP vs HTTPS และระบุความเสี่ยงได้</td><td>วิเคราะห์ผลกระทบจากกรณีศึกษา Ransomware</td><td>กำหนดนโยบายและแนวปฏิบัติในการดักจับข้อมูลสำหรับองค์กร</td></tr>
+                <tr><td class="skill-name">การปฏิบัติตามกฎหมาย PDPA และ พ.ร.บ.คอมพิวเตอร์ <span class="skill-sub">(W10)</span></td><td>รู้จักกฎหมาย PDPA และ พ.ร.บ.คอมพิวเตอร์</td><td>ขออนุญาตก่อนดักจับแพ็กเก็ตในเครือข่ายจำลอง</td><td>ออกแบบระบบระบุขอบเขตการเก็บข้อมูลส่วนบุคคลชัดเจน</td><td>ให้คำแนะนำด้านการปฏิบัติตามกฎหมาย PDPA</td></tr>
+                <tr><td class="skill-name">การอ้างอิงแหล่งที่มาทางวิชาการ <span class="skill-sub">(W2)</span></td><td>รู้จักรูปแบบการอ้างอิงแหล่งข้อมูล</td><td>อ้างอิงแหล่งที่มาของรูปภาพ ข้อมูล และโค้ดตัวอย่าง</td><td>อ้างอิงแหล่งข้อมูลอย่างครบถ้วน (APA/IEEE)</td><td>ตรวจสอบและแนะนำเพื่อนในการอ้างอิงแหล่งข้อมูล</td></tr></tbody></table></div>
+                <div id="ethics-2" class="tab-content"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การตระหนักถึงความเสี่ยงจากการโจมตีทางไซเบอร์ <span class="skill-sub">(W7, W11)</span></td><td>อธิบายรูปแบบการโจมตีเบื้องต้น (Ransomware, Phishing)</td><td>ยกตัวอย่างกรณีศึกษา Ransomware จริง</td><td>วิเคราะห์ช่องโหว่ของระบบและเสนอแนวทางป้องกัน</td><td>ออกแบบระบบที่มีกลไกการป้องกันการโจมตี (IDS/IPS)</td></tr>
+                <tr><td class="skill-name">การพัฒนาเทคโนโลยีเพื่อสังคม <span class="skill-sub">(W2)</span></td><td>รู้จักแนวคิดเทคโนโลยีเพื่อสังคม</td><td>วิเคราะห์ผลกระทบของ E-Commerce ต่อสังคม</td><td>ออกแบบโครงงานคำนึงถึง Accessibility</td><td>เป็นผู้นำโครงการซอฟต์แวร์เพื่อสังคม</td></tr></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- Cognitive Skills Section -->
+        <div class="card" id="cognitive">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><i class="fas fa-brain"></i> องค์ประกอบที่ 2: ทักษะด้านความคิดและการแก้ปัญหา</h2>
+                <i class="fas fa-chevron-up toggle-icon"></i>
+            </div>
+            <div class="card-body">
+                <div class="tabs"><button class="tab-btn active" data-tab="cognitive-1">การคิดเชิงคำนวณ</button><button class="tab-btn" data-tab="cognitive-2">การคิดเชิงวิพากษ์</button><button class="tab-btn" data-tab="cognitive-3">การแก้ปัญหา</button></div>
+                <div id="cognitive-1" class="tab-content active"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การแยกส่วนปัญหา (Decomposition) <span class="skill-sub">(W2, W10)</span></td><td>อธิบายแนวคิดการแยกส่วนปัญหาได้</td><td>แยกขอบเขตโครงงานออกเป็นโมดูลย่อย</td><td>แยกส่วนระบบเป็นฟังก์ชันย่อยอย่างเป็นระบบ</td><td>ออกแบบสถาปัตยกรรมแบบ Modular / Microservices</td></tr>
+                <tr><td class="skill-name">การจดจำรูปแบบ (Pattern Recognition) <span class="skill-sub">(W2)</span></td><td>รู้จักแนวคิดการจดจำรูปแบบ</td><td>วิเคราะห์รูปแบบการทำงานของระบบ E-Commerce</td><td>ระบุรูปแบบการสื่อสารในเครือข่ายผ่าน Wireshark</td><td>สร้างโมเดล ML ตรวจจับรูปแบบการโจมตีเครือข่าย</td></tr>
+                <tr><td class="skill-name">การออกแบบอัลกอริทึม <span class="skill-sub">(W6, W11)</span></td><td>อธิบายขั้นตอนอัลกอริทึม AES และ Three-Way Handshake</td><td>เขียน Pseudo-code สำหรับระบบอัปโหลดไฟล์</td><td>พัฒนาอัลกอริทึมการเข้ารหัสด้วย CryptoJS</td><td>ออกแบบอัลกอริทึมที่มีประสิทธิภาพสูง (Chunk Upload)</td></tr></tbody></table></div>
+                <div id="cognitive-2" class="tab-content"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การประเมินข้อดี-ข้อเสียของเทคโนโลยี <span class="skill-sub">(W7, W9)</span></td><td>ระบุข้อดี-ข้อเสียของ Native/Web/Hybrid App และ Windows/Linux</td><td>เปรียบเทียบและยกตัวอย่างการใช้งานที่เหมาะสม</td><td>ให้เหตุผลในการเลือกระบบปฏิบัติการสำหรับโครงงาน</td><td>เสนอแนะเทคโนโลยีที่เหมาะสมสำหรับองค์กร</td></tr>
+                <tr><td class="skill-name">การวิเคราะห์ต้นทุน-ประโยชน์ <span class="skill-sub">(W8)</span></td><td>อธิบายความแตกต่าง CapEx vs OpEx</td><td>วิเคราะห์ต้นทุนการเลือกใช้บริการคลาวด์</td><td>ประเมินความคุ้มค่าของบริการคลาวด์สำหรับโครงงาน</td><td>วางแผนงบประมาณและคาดการณ์ต้นทุนระยะยาว</td></tr></tbody></table></div>
+                <div id="cognitive-3" class="tab-content"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">เทคนิค 5 Whys / Root Cause Analysis <span class="skill-sub">(W12, W13)</span></td><td>อธิบายหลักการ 5 Whys และ RCA ได้</td><td>ประยุกต์ใช้ 5 Whys วิเคราะห์ปัญหาประสิทธิภาพระบบ</td><td>ใช้ 5 Whys วิเคราะห์ปัญหาความปลอดภัย</td><td>นำกระบวนการ RCA ไปปรับใช้กับโครงงานจริง</td></tr>
+                <tr><td class="skill-name">การแก้ปัญหาเบื้องต้นด้วย CLI <span class="skill-sub">(W5)</span></td><td>รู้จักคำสั่ง ping, ipconfig, nslookup, netstat</td><td>ใช้คำสั่งตรวจสอบสถานะเครือข่ายได้</td><td>ใช้ pathping, Test-Connection วิเคราะห์เส้นทาง</td><td>เขียน Script PowerShell/Bash แก้ปัญหาอัตโนมัติ</td></tr></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- Interpersonal Skills Section -->
+        <div class="card" id="interpersonal">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><i class="fas fa-users"></i> องค์ประกอบที่ 3: ทักษะด้านความสัมพันธ์ระหว่างบุคคล</h2>
+                <i class="fas fa-chevron-up toggle-icon"></i>
+            </div>
+            <div class="card-body">
+                <div class="tabs"><button class="tab-btn active" data-tab="inter-1">การทำงานเป็นทีม</button><button class="tab-btn" data-tab="inter-2">การสื่อสารทางเทคนิค</button></div>
+                <div id="inter-1" class="tab-content active"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การแบ่งบทบาทในทีม <span class="skill-sub">(W1, W6)</span></td><td>รู้จักบทบาทในทีมพัฒนา</td><td>แบ่งงานตามความถนัดและบันทึกการแบ่งหน้าที่</td><td>กำหนดบทบาทชัดเจน (User/Admin) และปฏิบัติตาม</td><td>ปรับเปลี่ยนบทบาทตามสถานการณ์และเป็นที่ปรึกษา</td></tr>
+                <tr><td class="skill-name">การใช้ Git สำหรับการทำงานร่วมกัน <span class="skill-sub">(W4)</span></td><td>รู้จักแนวคิด Version Control</td><td>ใช้คำสั่ง Git พื้นฐาน (clone, add, commit, push)</td><td>ใช้ Branching Strategy และจัดการ Merge Conflict</td><td>ตั้งค่า Git Hook, Code Review Process</td></tr>
+                <tr><td class="skill-name">การให้และรับ Feedback <span class="skill-sub">(W1, W13)</span></td><td>เข้าใจความสำคัญของ Feedback</td><td>ให้ Feedback อย่างสุภาพและสร้างสรรค์</td><td>รับ Feedback และนำมาปรับปรุงโครงงาน</td><td>เป็นผู้ประสานงานหลักในการรับ Feedback</td></tr></tbody></table></div>
+                <div id="inter-2" class="tab-content"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การเขียนเอกสารทางเทคนิค <span class="skill-sub">(W10)</span></td><td>รู้จักองค์ประกอบเอกสารทางเทคนิค</td><td>เขียน Comment ในโค้ดอธิบายการทำงาน</td><td>เขียน Installation Guide และ User Manual</td><td>เขียน API Documentation (Swagger) และรายงานโครงงาน</td></tr>
+                <tr><td class="skill-name">การนำเสนอผลงาน <span class="skill-sub">(W1, W13)</span></td><td>รู้จักโครงสร้างการนำเสนอ</td><td>นำเสนอตามโครงสร้างที่กำหนด</td><td>นำเสนอชัดเจน มี Demo ที่น่าสนใจ 15-20 นาที</td><td>นำเสนอแบบมืออาชีพ ใช้ Storytelling และปรับตามผู้ฟัง</td></tr>
+                <tr><td class="skill-name">การตอบคำถามทางเทคนิค <span class="skill-sub">(W1, W13)</span></td><td>รู้จักเทคนิคเตรียมตัวตอบคำถาม</td><td>ตอบคำถามพื้นฐานเกี่ยวกับโครงงานได้</td><td>เตรียมตัวตอบคำถามที่อาจเกิดขึ้น ตอบตรงประเด็น</td><td>ตอบคำถามมั่นใจ อธิบายแนวคิดซับซ้อนให้เข้าใจง่าย</td></tr></tbody></table></div>
+                <div class="presentation-flow"><h4><i class="fas fa-chalkboard"></i> โครงสร้างการนำเสนอโครงงาน (W13)</h4><div class="flow-steps"><div class="flow-step">Introduction</div><div class="flow-step">Problem Statement</div><div class="flow-step">Solution</div><div class="flow-step">Features/Benefits</div><div class="flow-step">Challenges</div><div class="flow-step">Demo</div><div class="flow-step">Conclusion</div></div><p style="font-size:0.8rem; margin-top:0.5rem;">⏱️ รวม 15-20 นาที | เตรียม Q&A 5 นาที</p></div>
+            </div>
+        </div>
+
+        <!-- Data Analysis Section -->
+        <div class="card" id="data">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><i class="fas fa-database"></i> องค์ประกอบที่ 4: ทักษะด้านการวิเคราะห์และการจัดการข้อมูล</h2>
+                <i class="fas fa-chevron-up toggle-icon"></i>
+            </div>
+            <div class="card-body">
+                <div class="tabs"><button class="tab-btn active" data-tab="data-1">การจัดการข้อมูล</button><button class="tab-btn" data-tab="data-2">การวิเคราะห์ข้อมูล</button><button class="tab-btn" data-tab="data-3">การแสดงผลข้อมูล</button></div>
+                <div id="data-1" class="tab-content active"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การจำแนกประเภทข้อมูล <span class="skill-sub">(W7)</span></td><td>อธิบายความแตกต่าง Structured/Semi-structured/Unstructured</td><td>จำแนกประเภทข้อมูลในระบบที่พัฒนาขึ้น</td><td>เลือกใช้ระบบจัดเก็บข้อมูลให้เหมาะสมกับประเภทข้อมูล</td><td>ออกแบบระบบจัดการข้อมูลหลายประเภทในโครงสร้างเดียวกัน</td></tr>
+                <tr><td class="skill-name">การออกแบบฐานข้อมูล <span class="skill-sub">(W6, W10)</span></td><td>รู้จัก ERD และ Normalization</td><td>ออกแบบตาราง file_metadata สำหรับ Project 1</td><td>ออกแบบ Schema สำหรับเก็บประวัติแพ็กเก็ตใน Project 2</td><td>ออกแบบฐานข้อมูล Normalization ระดับ 3 (3NF)</td></tr></tbody></table></div>
+                <div id="data-2" class="tab-content"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การใช้เครื่องมือวิเคราะห์ข้อมูล <span class="skill-sub">(W12)</span></td><td>รู้จัก Lighthouse, GTmetrix, WebPageTest</td><td>ใช้ Lighthouse วิเคราะห์ประสิทธิภาพเว็บไซต์</td><td>วิเคราะห์รายงานเพื่อระบุจุดที่ต้องปรับปรุง</td><td>เปรียบเทียบผลก่อน-หลัง และเสนอแนวทางการปรับปรุง</td></tr>
+                <tr><td class="skill-name">การวิเคราะห์ Log และ Performance Data <span class="skill-sub">(W12, W13)</span></td><td>รู้จักประเภทของ Log</td><td>อ่าน Log Files เพื่อหา Error Message</td><td>วิเคราะห์ Slow Query Log และ Performance Monitor</td><td>ตั้งค่า Centralized Logging (ELK Stack)</td></tr></tbody></table></div>
+                <div id="data-3" class="tab-content"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การสร้างกราฟด้วย JavaScript <span class="skill-sub">(W10, W13)</span></td><td>รู้จัก Chart.js, D3.js</td><td>สร้างกราฟพื้นฐานด้วย Chart.js</td><td>สร้างกราฟ Real-time ที่อัปเดตผ่าน WebSocket</td><td>ปรับแต่งกราฟให้มี Interactive (Tooltip, Zoom)</td></tr>
+                <tr><td class="skill-name">การออกแบบ Dashboard <span class="skill-sub">(W10, W13)</span></td><td>รู้จักองค์ประกอบของ Dashboard</td><td>ออกแบบ Dashboard อย่างง่าย</td><td>ออกแบบ Dashboard สำหรับ Project 2 ครบถ้วน</td><td>ออกแบบ Dashboard ที่ Responsive และมี Drill-down</td></tr></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- Technology Section -->
+        <div class="card" id="tech">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><i class="fas fa-laptop-code"></i> องค์ประกอบที่ 5: ทักษะด้านเทคโนโลยีสารสนเทศและการสื่อสาร</h2>
+                <i class="fas fa-chevron-up toggle-icon"></i>
+            </div>
+            <div class="card-body">
+                <div class="tabs"><button class="tab-btn active" data-tab="tech-1">Web Dev</button><button class="tab-btn" data-tab="tech-2">Security</button><button class="tab-btn" data-tab="tech-3">OS</button><button class="tab-btn" data-tab="tech-4">Network</button><button class="tab-btn" data-tab="tech-5">Cloud</button></div>
+                <div id="tech-1" class="tab-content active"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">Frontend (HTML/CSS/JS) <span class="skill-sub">(W4, W6)</span></td><td>รู้จัก HTML/CSS/JS และ DOM</td><td>สร้างหน้าเว็บที่มี Form, Button</td><td>ใช้ Fetch API ส่งข้อมูลไปยัง Backend</td><td>พัฒนา SPA ที่มี State Management</td></tr>
+                <tr><td class="skill-name">Backend (Node.js/Express) <span class="skill-sub">(W4, W6)</span></td><td>รู้จัก Node.js, npm และการสร้างเซิร์ฟเวอร์พื้นฐาน</td><td>สร้าง REST API (GET, POST) และทดสอบด้วย Postman</td><td>พัฒนา API สำหรับอัปโหลด/ดาวน์โหลดไฟล์และเชื่อมต่อ Database</td><td>พัฒนา API ที่มี Middleware (Auth, Validation, Error Handling)</td></tr>
+                <tr><td class="skill-name">Real-time (WebSocket) <span class="skill-sub">(W4, W13)</span></td><td>รู้จักความแตกต่าง HTTP vs WebSocket</td><td>สร้าง WebSocket Server/Client พื้นฐาน</td><td>พัฒนา Real-time Dashboard ส่งข้อมูลแพ็กเก็ตผ่าน WebSocket</td><td>ปรับแต่งประสิทธิภาพ WebSocket และจัดการ Reconnection</td></tr></tbody></table></div>
+                <div id="tech-2" class="tab-content"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การเข้ารหัสข้อมูล (Encryption) <span class="skill-sub">(W11, W13)</span></td><td>อธิบายความแตกต่าง Symmetric vs Asymmetric</td><td>ใช้ CryptoJS และ crypto เข้ารหัส/ถอดรหัส AES-256-CBC</td><td>พัฒนาระบบแสดงสถานะการเข้ารหัสของแพ็กเก็ตใน Dashboard</td><td>ออกแบบระบบการจัดการคีย์ (Key Management) และ mTLS</td></tr>
+                <tr><td class="skill-name">การพิสูจน์ตัวตน (Authentication) <span class="skill-sub">(W11, W7)</span></td><td>รู้จัก Authentication, Authorization, MFA</td><td>สร้างระบบ Login อย่างง่ายด้วย JWT</td><td>ใช้ bcrypt Hash รหัสผ่าน และจัดการ Session/JWT</td><td>พัฒนาระบบ Authentication ที่มี MFA, RBAC, OAuth2.0</td></tr>
+                <tr><td class="skill-name">การป้องกันการโจมตี <span class="skill-sub">(W11, W10)</span></td><td>รู้จักรูปแบบการโจมตีพื้นฐาน (XSS, SQL Injection, DoS)</td><td>ติดตั้ง Helmet, CORS และ Rate Limiting ใน Express</td><td>ตั้งค่า Firewall (UFW) และ SELinux/AppArmor</td><td>ใช้ WAF และ IDS ในการป้องกันและตรวจจับการโจมตี</td></tr></tbody></table></div>
+                <div id="tech-3" class="tab-content"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การติดตั้งและตั้งค่า OS <span class="skill-sub">(W9, W10)</span></td><td>รู้จักขั้นตอนการติดตั้ง Windows และ Ubuntu Linux</td><td>ติดตั้ง Ubuntu Server บน VM หรือเครื่องจริง</td><td>ตั้งค่า Static IP, Hostname, NTP</td><td>ติดตั้งและกำหนดค่า OS สำหรับ Production พร้อม Security Hardening</td></tr>
+                <tr><td class="skill-name">การใช้ CLI และ PowerShell <span class="skill-sub">(W3, W9)</span></td><td>รู้จักคำสั่งพื้นฐานใน Linux และ PowerShell</td><td>นำทางระบบไฟล์ จัดการไฟล์ รันโปรแกรมผ่าน Terminal</td><td>ใช้ CLI ตรวจสอบสถานะระบบ (df, free, top, ps, netstat)</td><td>เขียน Shell Script หรือ PowerShell Script เพื่อ Automate งานประจำ</td></tr>
+                <tr><td class="skill-name">การปรับแต่งประสิทธิภาพ OS <span class="skill-sub">(W10)</span></td><td>รู้จัก Kernel Parameters, File Limits, Swappiness</td><td>ปรับค่า File Limits และ Swappiness</td><td>ตั้งค่า Promiscuous Mode, Buffer Size, Kernel Parameters</td><td>วิเคราะห์และปรับแต่ง Performance Tuning สำหรับ Production</td></tr></tbody></table></div>
+                <div id="tech-4" class="tab-content"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การวิเคราะห์แพ็กเก็ตด้วย Wireshark <span class="skill-sub">(W5, W13)</span></td><td>รู้จักหลักการทำงานของ Wireshark</td><td>ติดตั้ง Wireshark และดักจับแพ็กเก็ตเบื้องต้น</td><td>ใช้ Filter วิเคราะห์แพ็กเก็ตเฉพาะและระบุ Protocol</td><td>วิเคราะห์ TCP Stream และตรวจจับการโจมตีจากแพ็กเก็ต</td></tr>
+                <tr><td class="skill-name">การใช้คำสั่งเครือข่าย <span class="skill-sub">(W5, W10)</span></td><td>รู้จัก ping, ipconfig, nslookup, netstat, tracert</td><td>ใช้ ping ทดสอบการเชื่อมต่อ, ipconfig ดู IP</td><td>ใช้ netstat ตรวจสอบสถานะ, tracert ตรวจสอบเส้นทาง</td><td>ใช้ pathping วิเคราะห์ Packet Loss, Test-Connection ใน PowerShell</td></tr>
+                <tr><td class="skill-name">TCP/IP Protocol Stack <span class="skill-sub">(W5)</span></td><td>อธิบายโครงสร้าง TCP/IP 4 Layers</td><td>ระบุ Protocol ที่ทำงานในแต่ละ Layer</td><td>อธิบาย Three-Way Handshake, Encapsulation</td><td>วิเคราะห์ TCP Flags, Window Size, Retransmission</td></tr></tbody></table></div>
+                <div id="tech-5" class="tab-content"><table class="rubrics-table"><thead><tr><th>ทักษะย่อย</th><th>ระดับ 1</th><th>ระดับ 2</th><th>ระดับ 3</th><th>ระดับ 4</th></tr></thead>
+                <tbody><tr><td class="skill-name">การเลือกรูปแบบบริการคลาวด์ <span class="skill-sub">(W8)</span></td><td>อธิบายความแตกต่าง SaaS, DaaS, PaaS, IaaS</td><td>เลือกใช้บริการคลาวด์ที่เหมาะสมกับโครงงาน</td><td>วิเคราะห์ข้อดี-ข้อเสียของบริการคลาวด์แต่ละประเภท</td><td>ให้คำแนะนำในการเลือกใช้บริการคลาวด์ตามความต้องการ</td></tr>
+                <tr><td class="skill-name">การเชื่อมต่อกับบริการคลาวด์ <span class="skill-sub">(W8)</span></td><td>รู้จักการเผยแพร่ข้อมูลจาก Google Sheets</td><td>ดึงข้อมูลจาก Google Sheets ด้วย Fetch API</td><td>เชื่อมต่อ Google Drive API เพื่ออ่านไฟล์ Excel</td><td>ใช้ Cloud SDK จัดการทรัพยากรบนคลาวด์</td></tr></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div class="card" id="projects">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><i class="fas fa-project-diagram"></i> โครงงานและการประเมินผล</h2>
+                <i class="fas fa-chevron-up toggle-icon"></i>
+            </div>
+            <div class="card-body">
+                <div class="project-card"><h4><i class="fas fa-file-alt"></i> Project 1: ระบบบริหารจัดการไฟล์ระหว่าง Client-Server (10%)</h4><div><span class="skill-tag">Frontend Development</span><span class="skill-tag">Backend API</span><span class="skill-tag">File Handling (Multer)</span><span class="skill-tag">Encryption</span><span class="skill-tag">Git Collaboration</span><span class="skill-tag">Teamwork</span></div><p style="font-size:0.85rem; margin-top:0.5rem"><strong>เกณฑ์:</strong> User/Admin (3 คะแนน) | จัดการความถูกต้องข้อมูล (4 คะแนน) | ความครบถ้วนของระบบ (3 คะแนน)</p></div>
+                <div class="project-card"><h4><i class="fas fa-chart-line"></i> Project 2: Real-time Encrypted Packet Visualization Dashboard (20%)</h4><div><span class="skill-tag">WebSocket (Socket.io)</span><span class="skill-tag">Wireshark Analysis</span><span class="skill-tag">Encryption Detection</span><span class="skill-tag">Data Visualization (Chart.js)</span><span class="skill-tag">Dashboard Design</span><span class="skill-tag">OS Tuning (Promiscuous Mode)</span><span class="skill-tag">5 Whys / RCA</span></div><p style="font-size:0.85rem; margin-top:0.5rem"><strong>เกณฑ์:</strong> Packet Capture & Parsing (5 คะแนน) | Visualization & UI (5 คะแนน) | Encryption Simulation (5 คะแนน) | ความถูกต้องทางเทคนิค (2 คะแนน) | ความครบถ้วน (3 คะแนน)</p></div>
+                <h3 style="margin: 1.5rem 0 1rem 0;"><i class="fas fa-chart-simple"></i> เกณฑ์การประเมินผล</h3>
+                <table class="summary-table"><thead><tr><th>รายการประเมิน</th><th>น้ำหนัก</th><th>ระดับที่คาดหวัง</th><th>หมายเหตุ</th></tr></thead>
+                <tbody><tr><td>Project 1: ระบบบริหารจัดการไฟล์</td><td>10%</td><td>3</td><td>ตามเกณฑ์ W1 (User, Admin, ฟังก์ชันครบถ้วน)</td></tr>
+                <tr><td>Project 2: Real-time Dashboard</td><td>20%</td><td>3</td><td>ตามเกณฑ์ W1 (Packet Capture, Visualization, Encryption Status)</td></tr>
+                <tr><td>Teamwork (การนำเสนอ + การทำงานร่วมกัน)</td><td>5%</td><td>3</td><td>การแบ่งหน้าที่ การนำเสนอ การตอบคำถาม</td></tr>
+                <tr><td>แบบทดสอบย่อย (Quiz)</td><td>25%</td><td>2</td><td>การทดสอบความเข้าใจเนื้อหาแต่ละสัปดาห์</td></tr>
+                <tr><td>กิจกรรมและแบบฝึกหัดตามสัปดาห์ (Workshop)</td><td>30%</td><td>2</td><td>การส่งงานรายสัปดาห์ตาม Guideline</td></tr>
+                <tr><td>การมีส่วนร่วมในชั้นเรียน</td><td>10%</td><td>2</td><td>การถาม-ตอบ แสดงความคิดเห็น</td></tr></tbody></table>
+                <h3 style="margin: 1.5rem 0 1rem 0;"><i class="fas fa-graduation-cap"></i> การแปลงผลการประเมินเป็น Skill Transcript</h3>
+                <table class="summary-table"><thead><tr><th>ระดับทักษะ</th><th>ผลการเรียน (Grade)</th><th>ความหมาย</th></tr></thead>
+                <tbody><tr><td><span class="level-badge level-4">4</span> Expertise</td><td>A (80-100)</td><td>ออกแบบ วิเคราะห์ และปรับปรุงระบบได้อย่างมีหลักการ สามารถถ่ายทอดความรู้ให้ผู้อื่นได้</td></tr>
+                <tr><td><span class="level-badge level-3">3</span> Mastery</td><td>B (70-79.9)</td><td>ประยุกต์ใช้ความรู้ในโครงงานได้ด้วยตนเอง อธิบายเหตุผลในการเลือกใช้เทคโนโลยี</td></tr>
+                <tr><td><span class="level-badge level-2">2</span> Application</td><td>C (60-69.9)</td><td>ปฏิบัติตามขั้นตอนในใบงานได้สำเร็จ ผ่านการทดสอบรายสัปดาห์</td></tr>
+                <tr><td><span class="level-badge level-1">1</span> Awareness</td><td>D (50-59.9)</td><td>อธิบายแนวคิดทฤษฎีพื้นฐานได้ ผ่านการทดสอบย่อย</td></tr></tbody></table>
+                <div class="info-badge"><i class="fas fa-book-open"></i> <strong>เอกสารอ้างอิง:</strong> เอกสารประกอบการสอนรายวิชา CSI203 สถาปัตยกรรมดิจิทัลและระบบปฏิบัติการ (W1-W13) | Suwanroj, T., et al. (2023) | Nongnuch, K., & Piriyasurawong, P. (2025)</div>
+            </div>
+        </div>
+
+        <!-- Tools Section -->
+        <div class="card" id="tools">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><i class="fas fa-tachometer-alt"></i> เครื่องมือตรวจสอบประสิทธิภาพ (Performance Monitor)</h2>
+                <i class="fas fa-chevron-up toggle-icon"></i>
+            </div>
+            <div class="card-body">
+                <div class="perf-monitor">
+                    <h3>📊 Web Performance Monitor (W12)</h3>
+                    <div class="metrics-grid"><div class="metric-card"><div>DOM Load Time</div><div class="metric-value" id="domLoadTime">-</div><div>ms</div></div><div class="metric-card"><div>Page Load Time</div><div class="metric-value" id="pageLoadTime">-</div><div>ms</div></div><div class="metric-card"><div>Network Requests</div><div class="metric-value" id="networkCount">-</div><div>requests</div></div><div class="metric-card"><div>FPS</div><div class="metric-value" id="fpsValue">-</div><div>fps</div></div></div>
+                    <div class="monitor-controls"><button class="btn btn-primary" id="measureNow">📊 วัดค่าปัจจุบัน</button><button class="btn btn-secondary" id="simulateLoad">⚡ จำลองโหลดหนัก</button><button class="btn btn-danger" id="clearLogs">🗑️ ล้าง Log</button></div>
+                    <div class="log-container" id="logContainer"><div>📋 พร้อมใช้งาน คลิกปุ่มเพื่อวัดประสิทธิภาพ</div></div>
+                </div>
+                <h4 style="margin-top:1rem"><i class="fas fa-chart-simple"></i> เครื่องมืออื่นๆ ที่ใช้ในรายวิชา</h4>
+                <table class="comp-table"><thead><tr><th>เครื่องมือ</th><th>การใช้งาน</th><th>สัปดาห์</th></tr></thead>
+                <tbody><tr><td>Wireshark</td><td>วิเคราะห์แพ็กเก็ตเครือข่าย</td><td>W5, W13</td></tr>
+                <tr><td>Task Manager / Resource Monitor</td><td>ตรวจสอบ CPU, Memory, Disk I/O</td><td>W3, W12</td></tr>
+                <tr><td>Google Lighthouse / GTmetrix</td><td>วิเคราะห์ประสิทธิภาพเว็บไซต์</td><td>W12</td></tr>
+                <tr><td>PowerShell / Bash</td><td>คำสั่ง CLI สำหรับจัดการระบบ</td><td>W3, W5, W9, W10</td></tr>
+                <tr><td>tcpdump / Wireshark</td><td>ดักจับและวิเคราะห์แพ็กเก็ต</td><td>W5, W10</td></tr></tbody></table>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><i class="fas fa-university"></i> CSI203 สถาปัตยกรรมดิจิทัลและระบบปฏิบัติการ | สาขาวิชาวิทยาการคอมพิวเตอร์และนวัตกรรมการพัฒนาซอฟต์แวร์</p>
+        <p>มหาวิทยาลัยศรีปทุม (Sripatum University) | Skill Transcript Rubrics</p>
+    </div>
+
+    <div class="scroll-top" id="scrollTop">
+        <i class="fas fa-chevron-up"></i>
+    </div>
+
+    <script>
+        // Toggle card content
+        function toggleCard(headerElement) {
+            const card = headerElement.closest('.card');
+            const body = card.querySelector('.card-body');
+            const icon = headerElement.querySelector('.toggle-icon');
+            if (body.classList.contains('collapsed')) {
+                body.classList.remove('collapsed');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                body.classList.add('collapsed');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+
+        // Tab switching functionality
+        document.querySelectorAll('.tabs').forEach(tabContainer => {
+            const btns = tabContainer.querySelectorAll('.tab-btn');
+            btns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.getAttribute('data-tab');
+                    const parentCard = btn.closest('.card');
+                    const tabsContainer = btn.closest('.tabs');
+                    tabsContainer.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    parentCard.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    const activeContent = parentCard.querySelector(`#${targetId}`);
+                    if (activeContent) activeContent.classList.add('active');
+                });
+            });
+        });
+
+        // Performance Monitor
+        let fpsInterval = null;
+        let frameCount = 0;
+        let lastFpsTime = performance.now();
+
+        function measurePerformance() {
+            const perfData = performance.timing;
+            const domLoad = perfData.domContentLoadedEventEnd - perfData.navigationStart;
+            const pageLoad = perfData.loadEventEnd - perfData.navigationStart;
+            document.getElementById('domLoadTime').textContent = domLoad;
+            document.getElementById('pageLoadTime').textContent = pageLoad;
+            const resources = performance.getEntriesByType('resource');
+            document.getElementById('networkCount').textContent = resources.length;
+            return { domLoad, pageLoad };
+        }
+
+        function startFPSMonitoring() {
+            if (fpsInterval) clearInterval(fpsInterval);
+            frameCount = 0;
+            lastFpsTime = performance.now();
+            function countFrame() { frameCount++; requestAnimationFrame(countFrame); }
+            requestAnimationFrame(countFrame);
+            fpsInterval = setInterval(() => {
+                const now = performance.now();
+                const fps = (frameCount * 1000) / (now - lastFpsTime);
+                frameCount = 0;
+                lastFpsTime = now;
+                document.getElementById('fpsValue').textContent = fps.toFixed(1);
+            }, 1000);
+        }
+
+        function addLog(msg) {
+            const log = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            log.appendChild(entry);
+            entry.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            while (log.children.length > 20) log.removeChild(log.firstChild);
+        }
+
+        document.getElementById('measureNow').addEventListener('click', () => {
+            const perf = measurePerformance();
+            addLog(`DOM Load: ${perf.domLoad}ms, Page Load: ${perf.pageLoad}ms`);
+        });
+
+        document.getElementById('simulateLoad').addEventListener('click', () => {
+            addLog('⚠️ จำลองโหลดหนัก...');
+            const start = performance.now();
+            let sum = 0;
+            for (let i = 0; i < 50000000; i++) sum += Math.sqrt(i);
+            const duration = performance.now() - start;
+            addLog(`✅ โหลดหนักเสร็จสิ้น ใช้เวลา ${duration.toFixed(2)}ms`);
+            measurePerformance();
+        });
+
+        document.getElementById('clearLogs').addEventListener('click', () => {
+            document.getElementById('logContainer').innerHTML = '<div>🗑️ ล้างข้อมูลเรียบร้อย</div>';
+            addLog('ล้าง Log เรียบร้อย');
+        });
+
+        // Navigation scroll and active highlight
+        const sections = ['proficiency', 'week', 'ethics', 'cognitive', 'interpersonal', 'data', 'tech', 'projects', 'tools'];
+        
+        function updateActiveNav() {
+            const scrollPos = window.scrollY + 150;
+            let current = '';
+            for (const section of sections) {
+                const element = document.getElementById(section);
+                if (element && element.offsetTop <= scrollPos) {
+                    current = section;
+                }
+            }
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                const href = link.getAttribute('href').substring(1);
+                if (href === current) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const target = document.getElementById(targetId);
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        window.addEventListener('scroll', updateActiveNav);
+        
+        // Scroll to top
+        const scrollTopBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            measurePerformance();
+            startFPSMonitoring();
+            addLog('📊 หน้าเว็บโหลดเสร็จ พร้อมใช้งาน');
+            updateActiveNav();
+        });
+    </script>
+</body>
+</html>
